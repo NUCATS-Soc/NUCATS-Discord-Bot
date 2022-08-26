@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 
+import ids
 import tools
 import random
 import string
@@ -9,32 +10,13 @@ import smtplib
 with open("auth_password.txt") as file:
     auth_pw = file.read()
 
-# Server role ids
-server_id = 1011277165872021504
-auth_channel = 1011294492869001327
-
-verified_role = 1011283236497932318
-
-first_year_role = 1011278798995591238
-second_year_role = 1011278845825003602
-third_year_role = 1011278888841777222
-fourth_year_role = 1011278996291465378
-placement_year_role = 1011279029443244062
-alumni_role = 1011279128445587556
-postgrad_role = 1011279081263861791
-
-he_him_role = 1012485842691969116
-she_her_role = 1012486225745154068
-they_them_role = 1012486431421247508
-
-
 class Authentication(commands.Cog):
     def __init__(self, client):
         self.client = client
 
     @commands.command()
     async def auth(self, ctx):
-        if ctx.channel.id != auth_channel:
+        if ctx.channel.id != ids.auth_channel:
             return
 
         await tools.log(self.client, "``" + str(ctx.author) + "`` has begun the authentication")
@@ -94,7 +76,7 @@ class Authentication(commands.Cog):
             "Please enter your name below.")
 
         nickname = await tools.user_input_dm(self.client, ctx, r"\w{1,14}$")
-        await self.client.get_guild(server_id).get_member(nickname.author.id).edit(
+        await self.client.get_guild(ids.server_id).get_member(nickname.author.id).edit(
             nick=nickname.content)
 
         # Sets user pronouns
@@ -131,35 +113,35 @@ class Authentication(commands.Cog):
                   6 - Post Grad
                   7 - Alumni''')
         stage = await tools.user_input_dm(self.client, ctx, r"[1-7]{1}$")
-        member = self.client.get_guild(server_id).get_member(stage.author.id)
-        role = discord.utils.get(self.client.get_guild(server_id).roles, id=first_year_role)
+        member = self.client.get_guild(ids.server_id).get_member(stage.author.id)
+        role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.first_year_role)
 
         if stage.content == "1":
-            role = discord.utils.get(self.client.get_guild(server_id).roles, id=first_year_role)
+            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.first_year_role)
 
         elif stage.content == "2":
-            role = discord.utils.get(self.client.get_guild(server_id).roles, id=second_year_role)
+            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.second_year_role)
 
         elif stage.content == "3":
-            role = discord.utils.get(self.client.get_guild(server_id).roles, id=third_year_role)
+            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.third_year_role)
 
         elif stage.content == "4":
-            role = discord.utils.get(self.client.get_guild(server_id).roles, id=fourth_year_role)
+            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.fourth_year_role)
 
         elif stage.content == "5":
-            role = discord.utils.get(self.client.get_guild(server_id).roles, id=placement_year_role)
+            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.placement_year_role)
 
         elif stage.content == "6":
-            role = discord.utils.get(self.client.get_guild(server_id).roles, id=postgrad_role)
+            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.postgrad_role)
 
         elif stage.content == "7":
-            role = discord.utils.get(self.client.get_guild(server_id).roles, id=alumni_role)
+            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.alumni_role)
 
         await member.add_roles(role)
 
         # Gives the user verified role
 
-        role = discord.utils.get(self.client.get_guild(server_id).roles, id=verified_role)
+        role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.verified_role)
         await member.add_roles(role)
 
         await ctx.author.send("You are now authenticated and have full access to the server!")
