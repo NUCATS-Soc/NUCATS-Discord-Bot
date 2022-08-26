@@ -77,6 +77,7 @@ class Commands(commands.Cog):
             await member.add_roles(they_them_role)
             pronouns = "They/them"
 
+        ctx.author.send(f"Your pronouns have been changed to {pronouns}.")
         await tools.log(self.client, f"``{user}`` changed their pronouns to ``{pronouns}``")
 
 

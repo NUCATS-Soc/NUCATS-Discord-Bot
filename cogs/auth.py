@@ -60,7 +60,7 @@ class Authentication(commands.Cog):
 
         # Gets the user to accept the server rules
 
-        await ctx.author.send("**Step 3/6** \nPlease read our rules and type agree to agree with them.")
+        await ctx.author.send("**Step 3/6** \nPlease read our rules and type ``agree`` to accept them.")
 
         with open("rules.txt") as f:
             lines = f.read()
@@ -74,7 +74,7 @@ class Authentication(commands.Cog):
         await ctx.author.send(
             "**Step 4/6** \nAs part of the rules of the NUCATS server we require everyone's Discord name " +
             "to be their actual name.\n" +
-            "Please enter your name below:")
+            "Please enter your preferred name below:")
 
         nickname = await tools.user_input_dm(self.client, ctx, r"\w{1,14}$")
         await self.client.get_guild(ids.server_id).get_member(nickname.author.id).edit(
@@ -82,7 +82,7 @@ class Authentication(commands.Cog):
 
         # Sets user pronouns
 
-        await ctx.author.send("**Step 5/6**".replace('\n', ''))
+        await ctx.author.send("**Step 5/6**")
         reaction, user = await tools.get_user_pronouns(self.client, ctx, None)
         member = self.client.get_guild(ids.server_id).get_member(user.id)
 
@@ -103,7 +103,8 @@ class Authentication(commands.Cog):
         # Sets users stage
 
         await ctx.author.send(
-            "Step 6/6: Please select which stage you are in by entering the corresponding number: \n" +
+            "**Step 6/6** \n" +
+            "Please select which stage you are in by entering the corresponding number: \n" +
             "1 - Stage 1 (First year) \n" +
             "2 - Stage 2 \n" +
             "3 - Stage 3 \n" +
@@ -143,7 +144,10 @@ class Authentication(commands.Cog):
         role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.verified_role)
         await member.add_roles(role)
 
-        await ctx.author.send("You are now authenticated and have full access to the server!")
+        await ctx.author.send("**🎉 You are now authenticated! 🎉**\n" +
+                              "You should now have full access to the server. \n" +
+                              "To change your pronouns, type ``!pronouns`` in this chat. \n"
+                              "If you have any issues, contact committee.")
         await tools.log(self.client,
                         f"``{username.author}`` has authenticated. \n"
                         f"  - Student number ``{username.content}`` \n"
