@@ -38,6 +38,13 @@ class FunCommands(commands.Cog):
         embed.set_image(url=dogjson["link"])
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=["Joke"])
+    async def joke(self, ctx):
+        async with aiohttp.ClientSession() as session:
+            request = await session.get("https://some-random-api.ml/joke")
+            jokejson = await request.json()
+        embed = discord.Embed(title=jokejson["joke"], colour=discord.Color.random())
+        await ctx.send(embed=embed)
 
 async def setup(client):
     await client.add_cog(FunCommands(client))
