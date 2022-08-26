@@ -11,11 +11,12 @@ class Commands(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command(aliases=["random", "randomnumber", "rand", "randnum"])
-    async def ran(self, ctx, arg1, arg2):
-        await ctx.channel.send("🎲 Your random number is : " + str(random.randint(int(arg1), int(arg2))))
+    @commands.command(aliases=["random", "randomnumber", "rand", "randnum"], brief="Generates a random number",
+                      description="Generates a random number between two given arguments.")
+    async def ran(self, ctx, number1, number2):
+        await ctx.channel.send("🎲 Your random number is : " + str(random.randint(int(number1), int(number2))))
 
-    @commands.command(aliases=["flipcoin", "coin"])
+    @commands.command(aliases=["flipcoin", "coin"], brief="Flips a coin", description="Flips a coin")
     async def flip(self, ctx):
         await ctx.channel.send(f"{ctx.message.author.mention}🪙 throws a coin in the air and it lands on....")
         if random.randint(0, 2) == 1:
@@ -23,7 +24,8 @@ class Commands(commands.Cog):
         else:
             await ctx.channel.send("TAILS")
 
-    @commands.command(aliases=["dog", "dogs", "nudogs"])
+    @commands.command(aliases=["dog", "dogs", "nudogs"], brief="Gets an image of a dog",
+                      description="Gets a random image of a dog")
     async def nudog(self, ctx):
         async with aiohttp.ClientSession() as session:
             request = await session.get("https://some-random-api.ml/img/dog")
@@ -32,7 +34,8 @@ class Commands(commands.Cog):
         embed.set_image(url=dogjson["link"])
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["cat", "cats", "nucats"])
+    @commands.command(aliases=["cat", "cats", "nucats"], brief="Gets an image of a cat",
+                      description="Gets a random image of a cat")
     async def nucat(self, ctx):
         async with aiohttp.ClientSession() as session:
             request = await session.get("https://some-random-api.ml/img/cat")
@@ -41,7 +44,7 @@ class Commands(commands.Cog):
         embed.set_image(url=dogjson["link"])
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(brief="Tells a joke", description="Tells a joke")
     async def joke(self, ctx):
         async with aiohttp.ClientSession() as session:
             request = await session.get("https://some-random-api.ml/joke")
@@ -49,10 +52,11 @@ class Commands(commands.Cog):
         embed = discord.Embed(title=jokejson["joke"], colour=discord.Color.random())
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["pronoun"])
+    @commands.command(aliases=["pronoun"], brief="Changes pronouns", description="Updates a users pronoun roles")
     async def pronouns(self, ctx):
         reaction, user = await tools.get_user_pronouns(self.client, ctx)
 
+        # Gets roles
         he_him_role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.he_him_role)
         she_her_role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.she_her_role)
         they_them_role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.they_them_role)

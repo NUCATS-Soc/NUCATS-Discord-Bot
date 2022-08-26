@@ -15,7 +15,8 @@ class Authentication(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command()
+    @commands.command(brief="Starts the auth process",
+                      description="Starts the auth process. Can only be executed in the auth channel")
     async def auth(self, ctx):
         if ctx.channel.id != ids.auth_channel:
             return
