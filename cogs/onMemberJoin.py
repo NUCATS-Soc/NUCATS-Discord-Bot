@@ -9,6 +9,8 @@ class OnMemberJoin(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+    # DMs user when they join the server
+
     @commands.Cog.listener()
     async def on_member_join(self, member):
         try:

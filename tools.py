@@ -10,7 +10,7 @@ async def log(client, value):
     await log_message.send(str(value))
 
 
-async def checkUniversityUsername(m):
+async def check_student_number(m):
     if len(m) != 8:
         return False
     regex = r'^([A-C|a-c])\d{7}$'
@@ -20,7 +20,7 @@ async def checkUniversityUsername(m):
         return False
 
 
-async def userInputDM(client, ctx, str):
+async def user_input_dm(client, ctx, str):
     while True:
         msg = await client.wait_for("message")
         if ctx.author == msg.author and isinstance(msg.channel, discord.channel.DMChannel):
