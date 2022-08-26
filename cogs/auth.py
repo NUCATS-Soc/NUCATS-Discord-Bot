@@ -42,17 +42,13 @@ class Authentication(commands.Cog):
         # Gets and checks the users student number
 
         await ctx.author.send("Thank you for starting the NUCATS authentication process.\n" +
-                              "Step 1/6: Please enter your university student number (i.e. B8028969 or C1023937).")
+                              "Step 1/6: Please enter your university student number (i.e. B8028969 or C1023937):")
 
         username = await tools.user_input_dm(self.client, ctx, r"^([A-C|a-c])\d{7}$")
 
         # Generates a random auth code and emails this to the user
 
         authCode = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(8))
-        await ctx.author.send(
-            "Step 2/6: We have emailed you a verification code to: " + username.content + "@ncl.ac.uk \n" +
-            "Please copy and paste it below.\n" +
-            "This email may be in your junk mail.")
 
         sent_from = "nucats.auth.no.reply@gmail.com"
         to = [username.content + "@ncl.ac.uk"]
@@ -72,6 +68,11 @@ class Authentication(commands.Cog):
         except discord.ClientException as e:
             await ctx.author.send("Something went wrong. Please retry authentication or contact an admin.")
 
+        await ctx.author.send(
+            "Step 2/6: We have emailed a verification code to: " + username.content + "@ncl.ac.uk \n" +
+            "Please copy and paste it below.\n" +
+            "This email may be in your junk mail.")
+
         await tools.user_input_dm(self.client, ctx, authCode)
 
         # Gets the user to accept the server rules
@@ -90,7 +91,7 @@ class Authentication(commands.Cog):
         await ctx.author.send(
             "Step 4/6: As part of the rules of the NUCATS server we require everyone's Discord name " +
             "to be their actual name.\n" +
-            "Please enter your preferred name below.")
+            "Please enter your name below.")
 
         nickname = await tools.user_input_dm(self.client, ctx, r"\w{1,14}$")
         await self.client.get_guild(server_id).get_member(nickname.author.id).edit(
@@ -122,13 +123,13 @@ class Authentication(commands.Cog):
         # Sets users stage
 
         await ctx.author.send('''Step 6/6: Please select which stage you are in by entering the corresponding number:)
-                  1 - first
-                  2 - second
-                  3 - third
-                  4 - fourth
-                  5 - placement
-                  6 - post grad
-                  7 - alumni''')
+                  1 - Stage 1 (First year)
+                  2 - Stage 2
+                  3 - Stage 3
+                  4 - Stage 4 
+                  5 - Placement
+                  6 - Post Grad
+                  7 - Alumni''')
         stage = await tools.user_input_dm(self.client, ctx, r"[1-7]{1}$")
         member = self.client.get_guild(server_id).get_member(stage.author.id)
         role = discord.utils.get(self.client.get_guild(server_id).roles, id=first_year_role)

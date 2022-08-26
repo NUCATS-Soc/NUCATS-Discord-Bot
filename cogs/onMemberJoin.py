@@ -15,7 +15,7 @@ class OnMemberJoin(commands.Cog):
         try:
             await member.send(
                 f"Hi {member.name}, welcome to the NUCATS Discord server!\n"
-                f"To gain access type ``!auth`` here or in the authentication channel"
+                f"To gain access to the rest of the server, type ``!auth`` in the ❗┃auth-here┃❗ channel"
             )
         except Exception as e:
             c = self.client.get_channel(auth_channel)
