@@ -22,7 +22,20 @@ class OnMemberJoin(commands.Cog):
             await c.send(f"Hi {member.mention}, welcome to the NUCATS Discord server!\n"
                          f"It seems like your privacy settings are preventing our bot messaging you.\n"
                          f"Please change your settings and type ``!auth`` in this channel.")
-        await tools.log(self.client, member.name + " joined the server")
+
+        await tools.log(self.client, f"``{member}`` joined the server")
+
+    @commands.Cog.listener()
+    async def on_member_remove(self, member):
+        await tools.log(self.client, f"``{member}`` left the server")
+
+    @commands.Cog.listener()
+    async def on_member_ban(self, guild, member):
+        await tools.log(self.client, f"``{member}`` was banned from the server")
+
+    @commands.Cog.listener()
+    async def on_member_unban(self, guild, member):
+        await tools.log(self.client, f"``{member}`` was unbanned from the server")
 
 
 async def setup(client):
