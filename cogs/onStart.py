@@ -10,7 +10,7 @@ class OnStart(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        await log(self.client, "Bot is online")
+        await log(self.client, "**Bot is online**")
         print("Bot is online")
 
 
