@@ -1,3 +1,4 @@
+import asyncio
 import re
 import discord
 
@@ -28,3 +29,28 @@ async def user_input_dm(client, ctx, str):
             else:
                 await ctx.author.send("Invalid input, please try again")
     return msg
+
+
+async def get_user_pronouns(client, ctx):
+    gender_message = await ctx.author.send("Please select your preferred pronouns by reacting to this post \n" +
+                                           "♂ - He/him \n" +
+                                           "♀ - She/her \n" +
+                                           "⚧ - They/them \n" +
+                                           "If your Pronoun is not here, please message committee and we will sort it :) \n" +
+                                           "You can change your pronouns later by reacting to this post again ")
+
+    # Reacts to its own post
+    emojis = ["♂", "♀", "⚧"]
+    for emoji in emojis:
+        await gender_message.add_reaction(emoji)
+
+    def check(reaction, user):
+        return user == ctx.author and str(reaction.emoji) in emojis
+
+    try:
+        reaction, user = await client.wait_for("reaction_add", timeout=60.0, check=check)
+    except asyncio.TimeoutError:
+        print("Pronoun change timed out")
+        await ctx.author.send("You did not react to the post in time. Type ``!pronouns`` to try again.")
+    else:
+        return reaction, user
