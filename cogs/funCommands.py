@@ -3,6 +3,9 @@ from discord.ext import commands
 import aiohttp
 import random
 
+import ids
+import tools
+
 
 class FunCommands(commands.Cog):
     def __init__(self, client):
@@ -45,6 +48,37 @@ class FunCommands(commands.Cog):
             jokejson = await request.json()
         embed = discord.Embed(title=jokejson["joke"], colour=discord.Color.random())
         await ctx.send(embed=embed)
+
+    @commands.command(aliases=["Pronouns", "pronoun", "Pronoun"])
+    async def pronouns(self, ctx):
+        reaction, user = await tools.get_user_pronouns(self.client, ctx)
+
+        he_him_role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.he_him_role)
+        she_her_role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.she_her_role)
+        they_them_role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.they_them_role)
+
+        member = self.client.get_guild(ids.server_id).get_member(user.id)
+
+        if str(reaction) == "♂":
+            await member.remove_roles(she_her_role)
+            await member.remove_roles(they_them_role)
+            await member.add_roles(he_him_role)
+            pronoun = "He/him"
+
+        elif str(reaction) == "♀":
+            await member.remove_roles(he_him_role)
+            await member.remove_roles(they_them_role)
+            await member.add_roles(she_her_role)
+            pronoun = "She/her"
+
+        else:
+            await member.remove_roles(she_her_role)
+            await member.remove_roles(he_him_role)
+            await member.add_roles(they_them_role)
+            pronoun = "They/them"
+
+        await tools.log(self.client, f"``{user}`` changed their pronouns to ``{pronoun}``")
+
 
 async def setup(client):
     await client.add_cog(FunCommands(client))
