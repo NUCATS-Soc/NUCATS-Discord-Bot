@@ -34,6 +34,9 @@ class Authentication(commands.Cog):
 
     @commands.command()
     async def auth(self, ctx):
+        if ctx.channel.id != auth_channel:
+            return
+
         await tools.log(self.client, str(ctx.author) + " has begun the authentication")
 
         # Gets and checks the users student number
