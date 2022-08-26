@@ -1,4 +1,3 @@
-import discord
 import tools
 from discord.ext import commands
 

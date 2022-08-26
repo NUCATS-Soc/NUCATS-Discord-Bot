@@ -1,6 +1,5 @@
-import discord
-from discord.ext import commands
 import re
+import discord
 
 log_channel_id = 1011294949679059015
 
