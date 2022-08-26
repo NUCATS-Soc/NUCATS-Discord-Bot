@@ -10,11 +10,11 @@ async def log(client, value):
     await log_message.send(str(value))
 
 
-async def check_student_number(m):
-    if len(m) != 8:
+async def check_student_number(student_number):
+    if len(student_number) != 8:
         return False
     regex = r'^([A-C|a-c])\d{7}$'
-    if re.match(regex, m):
+    if re.match(regex, student_number):
         return True
     else:
         return False
@@ -31,7 +31,7 @@ async def user_input_dm(client, ctx, str):
     return msg
 
 
-async def get_user_pronouns(client, ctx):
+async def get_user_pronouns(client, ctx, timeout=60.0):
     gender_message = await ctx.author.send("Please select your preferred pronouns by reacting to this post \n" +
                                            "♂ - He/him \n" +
                                            "♀ - She/her \n" +
@@ -48,9 +48,8 @@ async def get_user_pronouns(client, ctx):
         return user == ctx.author and str(reaction.emoji) in emojis
 
     try:
-        reaction, user = await client.wait_for("reaction_add", timeout=60.0, check=check)
+        reaction, user = await client.wait_for("reaction_add", timeout=timeout, check=check)
     except asyncio.TimeoutError:
-        print("Pronoun change timed out")
         await ctx.author.send("You did not react to the post in time. Type ``!pronouns`` to try again.")
     else:
         return reaction, user

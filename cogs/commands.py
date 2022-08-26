@@ -7,15 +7,15 @@ import ids
 import tools
 
 
-class FunCommands(commands.Cog):
+class Commands(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command(aliases=["random", "randomnumber", "randomNumber", "rand", "randnum", "randNum"])
+    @commands.command(aliases=["random", "randomnumber", "rand", "randnum"])
     async def ran(self, ctx, arg1, arg2):
         await ctx.channel.send("🎲 Your random number is : " + str(random.randint(int(arg1), int(arg2))))
 
-    @commands.command(aliases=["flipcoin", "flipCoin", "coin", "Coin"])
+    @commands.command(aliases=["flipcoin", "coin"])
     async def flip(self, ctx):
         await ctx.channel.send(f"{ctx.message.author.mention}🪙 throws a coin in the air and it lands on....")
         if random.randint(0, 2) == 1:
@@ -41,7 +41,7 @@ class FunCommands(commands.Cog):
         embed.set_image(url=dogjson["link"])
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["Joke"])
+    @commands.command()
     async def joke(self, ctx):
         async with aiohttp.ClientSession() as session:
             request = await session.get("https://some-random-api.ml/joke")
@@ -49,7 +49,7 @@ class FunCommands(commands.Cog):
         embed = discord.Embed(title=jokejson["joke"], colour=discord.Color.random())
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["Pronouns", "pronoun", "Pronoun"])
+    @commands.command(aliases=["pronoun"])
     async def pronouns(self, ctx):
         reaction, user = await tools.get_user_pronouns(self.client, ctx)
 
@@ -63,22 +63,22 @@ class FunCommands(commands.Cog):
             await member.remove_roles(she_her_role)
             await member.remove_roles(they_them_role)
             await member.add_roles(he_him_role)
-            pronoun = "He/him"
+            pronouns = "He/him"
 
         elif str(reaction) == "♀":
             await member.remove_roles(he_him_role)
             await member.remove_roles(they_them_role)
             await member.add_roles(she_her_role)
-            pronoun = "She/her"
+            pronouns = "She/her"
 
         else:
             await member.remove_roles(she_her_role)
             await member.remove_roles(he_him_role)
             await member.add_roles(they_them_role)
-            pronoun = "They/them"
+            pronouns = "They/them"
 
-        await tools.log(self.client, f"``{user}`` changed their pronouns to ``{pronoun}``")
+        await tools.log(self.client, f"``{user}`` changed their pronouns to ``{pronouns}``")
 
 
 async def setup(client):
-    await client.add_cog(FunCommands(client))
+    await client.add_cog(Commands(client))
