@@ -53,6 +53,7 @@ class Authentication(commands.Cog):
             "Step 2/6: We have emailed you a verification code to: " + username.content + "@ncl.ac.uk \n" +
             "Please copy and paste it below.\n" +
             "This email may be in your junk mail.")
+
         sent_from = "nucats.auth.no.reply@gmail.com"
         to = [username.content + "@ncl.ac.uk"]
         body = "Hello " + str(
@@ -76,10 +77,12 @@ class Authentication(commands.Cog):
         # Gets the user to accept the server rules
 
         await ctx.author.send("Step 3/6: Please read our rules and type agree to agree with them.")
+
         with open("rules.txt") as f:
             lines = f.read()
+
         await ctx.author.send(lines)
-        await ctx.author.send("**Please read the rules and type agree to agree with them**")
+        await ctx.author.send("**Please read the rules and type ``agree`` to accept them**")
         await tools.user_input_dm(self.client, ctx, "agree")
 
         # Gets the user to enter their real name to use on the server
@@ -88,6 +91,7 @@ class Authentication(commands.Cog):
             "Step 4/6: As part of the rules of the NUCATS server we require everyone's Discord name " +
             "to be their actual name.\n" +
             "Please enter your preferred name below.")
+
         nickname = await tools.user_input_dm(self.client, ctx, r"\w{1,14}$")
         await self.client.get_guild(server_id).get_member(nickname.author.id).edit(
             nick=nickname.content)
@@ -99,6 +103,7 @@ class Authentication(commands.Cog):
                       2 - she/her
                       3 - they/them
                     If your Pronoun is not here please message committee and we will sort it :)''')
+
         pronouns = await tools.user_input_dm(self.client, ctx, r"[1-3]{1}$")
         member = self.client.get_guild(server_id).get_member(pronouns.author.id)
         role = discord.utils.get(self.client.get_guild(server_id).roles,
@@ -124,35 +129,38 @@ class Authentication(commands.Cog):
                   5 - placement
                   6 - post grad
                   7 - alumni''')
-        stage = await tools.user_input_dm(self.client, ctx, r"[1-6]{1}$")
+        stage = await tools.user_input_dm(self.client, ctx, r"[1-7]{1}$")
         member = self.client.get_guild(server_id).get_member(stage.author.id)
-        role = discord.utils.get(self.client.get_guild(server_id).roles,
-                                 id=first_year_role)
+        role = discord.utils.get(self.client.get_guild(server_id).roles, id=first_year_role)
+
         if stage.content == "1":
-            role = discord.utils.get(self.client.get_guild(server_id).roles,
-                                     id=first_year_role)
+            role = discord.utils.get(self.client.get_guild(server_id).roles, id=first_year_role)
+
         elif stage.content == "2":
-            role = discord.utils.get(self.client.get_guild(server_id).roles,
-                                     id=second_year_role)
+            role = discord.utils.get(self.client.get_guild(server_id).roles, id=second_year_role)
+
         elif stage.content == "3":
-            role = discord.utils.get(self.client.get_guild(server_id).roles,
-                                     id=third_year_role)
+            role = discord.utils.get(self.client.get_guild(server_id).roles, id=third_year_role)
+
         elif stage.content == "4":
-            role = discord.utils.get(self.client.get_guild(server_id).roles,
-                                     id=fourth_year_role)
+            role = discord.utils.get(self.client.get_guild(server_id).roles, id=fourth_year_role)
+
         elif stage.content == "5":
-            role = discord.utils.get(self.client.get_guild(server_id).roles,
-                                     id=placement_year_role)
+            role = discord.utils.get(self.client.get_guild(server_id).roles, id=placement_year_role)
+
         elif stage.content == "6":
-            role = discord.utils.get(self.client.get_guild(server_id).roles,
-                                     id=postgrad_role)
+            role = discord.utils.get(self.client.get_guild(server_id).roles, id=postgrad_role)
+
         elif stage.content == "7":
-            role = discord.utils.get(self.client.get_guild(server_id).roles,
-                                     id=alumni_role)
+            role = discord.utils.get(self.client.get_guild(server_id).roles, id=alumni_role)
+
         await member.add_roles(role)
-        role = discord.utils.get(self.client.get_guild(server_id).roles,
-                                 id=verified_role)
+
+        # Gives the user verified role
+
+        role = discord.utils.get(self.client.get_guild(server_id).roles, id=verified_role)
         await member.add_roles(role)
+
         await ctx.author.send("You are now authenticated and have full access to the server!")
         await tools.log(self.client, f"{username.author} has authenticated with username {username.content}, "
                                      f"chose their nickname as {nickname.content}, chose option {pronouns.content} "
