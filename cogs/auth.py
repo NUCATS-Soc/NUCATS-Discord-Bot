@@ -146,10 +146,13 @@ class Authentication(commands.Cog):
 
         await ctx.author.send("You are now authenticated and have full access to the server!")
         await tools.log(self.client,
-                        f"``{username.author}`` has authenticated with student number ``{username.content}``, "
-                        f"chose their nickname as ``{nickname.content}``, "
-                        f"chose ``option {pronouns.content}`` "
-                        f"as their pronouns, and chose option ``{stage.content}`` for their stage.")
+                        f"``{username.author}`` has authenticated. \n"
+                        f"  - Student number ``{username.content}`` \n"
+                        f"  - Nickname ``{nickname.content}`` \n"
+                        f"  - Pronouns ``{pronoun}`` \n"
+                        f"  - Stage ``{stage.content}``")
+
+
 
 
 async def setup(client):
