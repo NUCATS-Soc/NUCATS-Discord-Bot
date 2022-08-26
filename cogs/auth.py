@@ -37,7 +37,7 @@ class Authentication(commands.Cog):
         if ctx.channel.id != auth_channel:
             return
 
-        await tools.log(self.client, str(ctx.author) + " has begun the authentication")
+        await tools.log(self.client, "``" + str(ctx.author) + "`` has begun the authentication")
 
         # Gets and checks the users student number
 
@@ -162,9 +162,11 @@ class Authentication(commands.Cog):
         await member.add_roles(role)
 
         await ctx.author.send("You are now authenticated and have full access to the server!")
-        await tools.log(self.client, f"{username.author} has authenticated with username {username.content}, "
-                                     f"chose their nickname as {nickname.content}, chose option {pronouns.content} "
-                                     f"as their pronouns, and chose option {stage.content} for their stage.")
+        await tools.log(self.client,
+                        f"``{username.author}`` has authenticated with student number ``{username.content}``, "
+                        f"chose their nickname as ``{nickname.content}``, "
+                        f"chose ``option {pronouns.content}`` "
+                        f"as their pronouns, and chose option ``{stage.content}`` for their stage.")
 
 
 async def setup(client):
