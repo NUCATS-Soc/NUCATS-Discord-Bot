@@ -81,25 +81,21 @@ class Authentication(commands.Cog):
 
         # Sets user pronouns
 
-        await ctx.author.send('''Step 5/6: Please select your preferred pronouns by entering the corresponding number:
-                      1 - he/him
-                      2 - she/her
-                      3 - they/them
-                    If your Pronoun is not here please message committee and we will sort it :)''')
+        reaction, user = await tools.get_user_pronouns(self.client, ctx)
+        member = self.client.get_guild(ids.server_id).get_member(user.id)
 
-        pronouns = await tools.user_input_dm(self.client, ctx, r"[1-3]{1}$")
-        member = self.client.get_guild(server_id).get_member(pronouns.author.id)
-        role = discord.utils.get(self.client.get_guild(server_id).roles,
-                                 id=they_them_role)
-        if pronouns.content == "1":
-            role = discord.utils.get(self.client.get_guild(server_id).roles,
-                                     id=he_him_role)
-        elif pronouns.content == "2":
-            role = discord.utils.get(self.client.get_guild(server_id).roles,
-                                     id=she_her_role)
-        elif pronouns.content == "3":
-            role = discord.utils.get(self.client.get_guild(server_id).roles,
-                                     id=they_them_role)
+        if str(reaction) == "♂":
+            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.he_him_role)
+            pronoun = "He/him"
+
+        elif str(reaction) == "♀":
+            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.she_her_role)
+            pronoun = "She/her"
+
+        else:
+            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.they_them_role)
+            pronoun = "They/them"
+
         await member.add_roles(role)
 
         # Sets users stage
