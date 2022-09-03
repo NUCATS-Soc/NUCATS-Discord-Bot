@@ -37,7 +37,7 @@ async def get_user_pronouns(client, ctx, timeout=60.0):
                                            "♀ - She/her \n" +
                                            "⚧ - They/them \n" +
                                            "If your Pronoun is not here, please message committee and we will sort it :) \n" +
-                                           "You can change your pronouns later by reacting to this post again ")
+                                           "You can change your pronouns later")
 
     # Reacts to its own post
     emojis = ["♂", "♀", "⚧"]

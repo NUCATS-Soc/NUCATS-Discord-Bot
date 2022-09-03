@@ -34,7 +34,7 @@ class Authentication(commands.Cog):
         # Gets the users email address
 
         await ctx.author.send(
-            "Thank you.\n**Step 2/7**\nPlease enter the first part of your university email address (i.e. J.L.Smith2):")
+            "Thank you.\n**Step 2/7**\nPlease enter the first part of your university email address (i.e. J.L.Smith2 or C10239379):")
 
         username = await tools.user_input_dm(self.client, ctx, r"^[0-9,a-z,A-Z,.]{1,30}$")
 
@@ -163,7 +163,8 @@ class Authentication(commands.Cog):
                         f"  - Student Number ``{student_number.content} \n``"
                         f"  - Email ``{username.content}`` \n"
                         f"  - Stage ``{stage.content}`` \n"
-                        f"  - Pronouns ``{pronoun}``"
+                        f"  - Pronouns ``{pronoun}`` \n"
+                        f"  - Id ``{member.id}``"
                         )
 
 
