@@ -23,12 +23,20 @@ class Authentication(commands.Cog):
 
         await tools.log(self.client, "``" + str(ctx.author) + "`` has begun the authentication")
 
-        # Gets and checks the users student number
+        # Gets the users student number
 
         await ctx.author.send("Thank you for starting the NUCATS authentication process.\n" +
-                              "**Step 1/6** \nPlease enter your university student number (i.e. B8028969 or C1023937):")
+                              "**Step 1/7** \n"
+                              "Please enter your university student number (i.e. 180289690 or 210239379):")
 
-        username = await tools.user_input_dm(self.client, ctx, r"^([A-C|a-c])\d{7}$")
+        student_number = await tools.user_input_dm(self.client, ctx, r"^\d{9}$")
+
+        # Gets the users email address
+
+        await ctx.author.send(
+            "Thank you.\n**Step 2/7**\nPlease enter the first part of your university email address (i.e. J.L.Smith2):")
+
+        username = await tools.user_input_dm(self.client, ctx, r"^[0-9,a-z,A-Z,.]{1,30}$")
 
         # Generates a random auth code and emails this to the user
 
@@ -53,7 +61,7 @@ class Authentication(commands.Cog):
             await ctx.author.send("Something went wrong. Please retry authentication or contact an admin.")
 
         await ctx.author.send(
-            "**Step 2/6** \nWe have emailed a verification code to: " + username.content + "@ncl.ac.uk \n" +
+            "**Step 3/7** \nWe have emailed a verification code to: " + username.content + "@ncl.ac.uk \n" +
             "Please copy and paste it below.\n" +
             "(This email may be in your junk mail)")
 
@@ -61,7 +69,7 @@ class Authentication(commands.Cog):
 
         # Gets the user to accept the server rules
 
-        await ctx.author.send("**Step 3/6** \nPlease read our rules and type ``agree`` to accept them.")
+        await ctx.author.send("**Step 4/6** \nPlease read our rules and type ``agree`` to accept them.")
 
         with open("rules.txt") as f:
             lines = f.read()
@@ -73,7 +81,7 @@ class Authentication(commands.Cog):
         # Gets the user to enter their real name to use on the server
 
         await ctx.author.send(
-            "**Step 4/6** \nAs part of the rules of the NUCATS server we require everyone's Discord name " +
+            "**Step 5/7** \nAs part of the rules of the NUCATS server we require everyone's Discord name " +
             "to be their actual name.\n" +
             "Please enter your preferred name below:")
 
@@ -83,7 +91,7 @@ class Authentication(commands.Cog):
 
         # Sets user pronouns
 
-        await ctx.author.send("**Step 5/6**")
+        await ctx.author.send("**Step 6/7**")
         reaction, user = await tools.get_user_pronouns(self.client, ctx, None)
         member = self.client.get_guild(ids.server_id).get_member(user.id)
 
@@ -104,7 +112,7 @@ class Authentication(commands.Cog):
         # Sets users stage
 
         await ctx.author.send(
-            "**Step 6/6** \n" +
+            "**Step 7/7** \n" +
             "Please select which stage you are in by entering the corresponding number: \n" +
             "1 - Stage 1 (First year) \n" +
             "2 - Stage 2 \n" +
@@ -146,15 +154,17 @@ class Authentication(commands.Cog):
         await member.add_roles(role)
 
         await ctx.author.send("**🎉 You are now authenticated! 🎉**\n" +
-                              "You should now have full access to the server. \n" +
+                              "You should now have access to the server. \n" +
                               "To change your pronouns, type ``!pronouns`` in this chat. \n"
                               "If you have any issues, contact committee.")
         await tools.log(self.client,
                         f"``{username.author}`` has authenticated. \n"
-                        f"  - Student number ``{username.content}`` \n"
                         f"  - Nickname ``{nickname.content}`` \n"
-                        f"  - Pronouns ``{pronoun}`` \n"
-                        f"  - Stage ``{stage.content}``")
+                        f"  - Student Number ``{student_number.content} \n``"
+                        f"  - Email ``{username.content}`` \n"
+                        f"  - Stage ``{stage.content}`` \n"
+                        f"  - Pronouns ``{pronoun}``"
+                        )
 
 
 async def setup(client):
