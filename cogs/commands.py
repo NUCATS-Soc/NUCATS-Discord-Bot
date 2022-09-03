@@ -1,3 +1,5 @@
+import csv
+
 import discord
 from discord.ext import commands
 import aiohttp
@@ -87,6 +89,8 @@ class Commands(commands.Cog):
     @commands.command()
     async def verified(self, ctx):
         server = ctx.message.guild
+        member_role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.member_role)
+
         for member in server.members:
             for role in member.roles:
                 if role.id == ids.verified_role:
@@ -94,9 +98,32 @@ class Commands(commands.Cog):
                                    f"   display_name: {member.display_name}\n"
                                    f"   id: {member.id}")
 
-                    if member.id == "1012495041501069312":
-                        member.add_roles(ids.member_role)
+                    if member.id == 1012495041501069312:
+                        await member.add_roles(member_role)
 
+    @commands.command()
+    async def validate_members(self, ctx):
+        with open("logs/verified_users.csv", newline="") as file:
+            reader = csv.reader(file)
+            verified_users = dict(reader)
+
+        with open("logs/members.txt") as file:
+            members = file.read().split("\n")
+
+        print(verified_users)
+
+        member_role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.member_role)
+
+        for member in ctx.message.guild.members:
+            for role in member.roles:
+                if role.id == ids.verified_role:
+                    if str(member.id) in verified_users.keys():
+                        student_number = verified_users.get(str(member.id))
+                        for student in members:
+                            if str(student) == str(student_number):
+                                print("This is the person you are looking for")
+                                await member.add_roles(member_role)
+                                await tools.log(self.client, f"``{member.display_name}`` has been given the member role")
 
 
 async def setup(client):

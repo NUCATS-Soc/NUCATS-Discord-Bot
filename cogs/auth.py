@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from csv import writer
 
 import ids
 import tools
@@ -157,6 +158,8 @@ class Authentication(commands.Cog):
                               "You should now have access to the server. \n" +
                               "To change your pronouns, type ``!pronouns`` in this chat. \n"
                               "If you have any issues, contact committee.")
+
+        # Logs users details
         await tools.log(self.client,
                         f"``{username.author}`` has authenticated. \n"
                         f"  - Nickname ``{nickname.content}`` \n"
@@ -166,6 +169,11 @@ class Authentication(commands.Cog):
                         f"  - Pronouns ``{pronoun}`` \n"
                         f"  - Id ``{member.id}``"
                         )
+
+        with open("logs/verified_users.csv", "a", newline="") as file:
+            file_writer = writer(file)
+            file_writer.writerow([student_number.content, member.id])
+            file.close()
 
 
 async def setup(client):
