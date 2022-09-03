@@ -81,8 +81,22 @@ class Commands(commands.Cog):
             await member.add_roles(they_them_role)
             pronouns = "They/them"
 
-        ctx.author.send(f"Your pronouns have been changed to {pronouns}.")
+        await ctx.author.send(f"Your pronouns have been changed to {pronouns}.")
         await tools.log(self.client, f"``{user}`` changed their pronouns to ``{pronouns}``")
+
+    @commands.command()
+    async def verified(self, ctx):
+        server = ctx.message.guild
+        for member in server.members:
+            for role in member.roles:
+                if role.id == ids.verified_role:
+                    await ctx.send(f"Verified\n"
+                                   f"   display_name: {member.display_name}\n"
+                                   f"   id: {member.id}")
+
+                    if member.id == "1012495041501069312":
+                        member.add_roles(ids.member_role)
+
 
 
 async def setup(client):
