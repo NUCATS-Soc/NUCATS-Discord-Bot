@@ -10,18 +10,30 @@ class CommitteePoints(commands.Cog):
 
     @commands.command()
     async def points(self, ctx, name):
-        results = await tools.querySelect(f"""SELECT * FROM committee_points WHERE id = "{arg1}";""")
-        await ctx.channel.send(f"{results[0][0]} has {results[0][1]} points")
+        name = name.lower()
+        if name in ["all", "*"]:
+            results = await tools.querySelect(f"""SELECT * FROM committee_points;""")
+            print(results)
+            await ctx.channel.send("**Committee Points:**")
+            for item in results:
+                await ctx.channel.send(f"{item[0]} - {item[1]}".capitalize())
+        else:
+            results = await tools.querySelect(f"""SELECT * FROM committee_points WHERE id = "{name}";""")
+            await ctx.channel.send(f"{results[0][0]} has {results[0][1]} points".capitalize())
 
     @commands.command()
     async def add_points(self, ctx, name, value):
+        name = name.lower()
         points = await tools.querySelect(f"""SELECT * FROM committee_points WHERE id = "{name}";""")
         points2 = points[0][1] + int(value)
         await tools.queryInsert(f"""UPDATE committee_points SET points = {points2} WHERE id = "{name}";""")
+        await ctx.channel.send(f"Added {value} points to {name.capitalize}!")
 
     @commands.command()
     async def add_user(self, ctx, name):
+        name = name.lower()
         await tools.queryInsert(f"""INSERT INTO committee_points(id,points) VALUES("{name}", 0)""")
+        await ctx.channel.send(f"Added {name.capitalize()}")
 
 
 async def setup(client):
