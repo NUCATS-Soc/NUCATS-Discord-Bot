@@ -86,7 +86,7 @@ class Commands(commands.Cog):
         await ctx.author.send(f"Your pronouns have been changed to {pronouns}.")
         await tools.log(self.client, f"``{user}`` changed their pronouns to ``{pronouns}``")
 
-    @commands.command()
+    @commands.command(brief="Shows all verified users", description="Shows all verified users and their discord ids")
     async def verified(self, ctx):
         if ctx.channel.id not in ids.committee_group:
             return
@@ -101,7 +101,8 @@ class Commands(commands.Cog):
                     await ctx.send(f"   display_name: {member.display_name}\n"
                                    f"   id: {member.id}")
 
-    @commands.command()
+    @commands.command(brief="Assigns the member role",
+                      description="Gives all paying members who have validate the member role")
     async def validate_members(self, ctx):
         if ctx.channel.id not in ids.committee_group:
             return
