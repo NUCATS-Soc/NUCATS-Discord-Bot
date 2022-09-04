@@ -94,18 +94,18 @@ class Commands(commands.Cog):
         server = ctx.message.guild
         member_role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.member_role)
 
+        ctx.send("**Verified members**")
         for member in server.members:
             for role in member.roles:
                 if role.id == ids.verified_role:
-                    await ctx.send(f"Verified\n"
-                                   f"   display_name: {member.display_name}\n"
+                    await ctx.send(f"   display_name: {member.display_name}\n"
                                    f"   id: {member.id}")
-
-                    if member.id == 1012495041501069312:
-                        await member.add_roles(member_role)
 
     @commands.command()
     async def validate_members(self, ctx):
+        if ctx.channel.id not in ids.committee_group:
+            return
+
         with open("logs/verified_users.csv", newline="") as file:
             reader = csv.reader(file)
             verified_users = dict(reader)
@@ -117,6 +117,7 @@ class Commands(commands.Cog):
 
         member_role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.member_role)
 
+        i = 0
         for member in ctx.message.guild.members:
             for role in member.roles:
                 if role.id == ids.verified_role:
@@ -124,9 +125,12 @@ class Commands(commands.Cog):
                         student_number = verified_users.get(str(member.id))
                         for student in members:
                             if str(student) == str(student_number):
+                                i = i + 1
                                 await member.add_roles(member_role)
                                 await tools.log(self.client,
                                                 f"``{member.display_name}`` has been given the **member** role")
+
+        await tools.log(self.client, f"{i} members have been given the member role")
 
 
 async def setup(client):
