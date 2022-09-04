@@ -121,9 +121,9 @@ class Commands(commands.Cog):
                         student_number = verified_users.get(str(member.id))
                         for student in members:
                             if str(student) == str(student_number):
-                                print("This is the person you are looking for")
                                 await member.add_roles(member_role)
-                                await tools.log(self.client, f"``{member.display_name}`` has been given the member role")
+                                await tools.log(self.client,
+                                                f"``{member.display_name}`` has been given the **member** role")
 
 
 async def setup(client):

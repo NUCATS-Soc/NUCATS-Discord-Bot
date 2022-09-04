@@ -2,11 +2,11 @@ import asyncio
 import re
 import discord
 
-log_channel_id = 1011294949679059015
+import ids
 
 
 async def log(client, value):
-    log_message = client.get_channel(log_channel_id)
+    log_message = client.get_channel(ids.bot_logs_channel)
     await log_message.send(str(value))
 
 
