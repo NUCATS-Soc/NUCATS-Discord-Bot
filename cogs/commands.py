@@ -114,8 +114,6 @@ class Commands(commands.Cog):
         with open("logs/members.txt") as file:
             members = file.read().split("\n")
 
-        print(verified_users)
-
         member_role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.member_role)
 
         i = 0
