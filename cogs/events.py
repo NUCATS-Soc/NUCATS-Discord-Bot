@@ -1,10 +1,11 @@
+import discord
+
+import ids
 import tools
 from discord.ext import commands
 
-auth_channel = 1011294492869001327
 
-
-class OnMemberJoin(commands.Cog):
+class Events(commands.Cog):
     def __init__(self, client):
         self.client = client
 
@@ -18,7 +19,7 @@ class OnMemberJoin(commands.Cog):
                 f"To gain access to the rest of the server, type ``!auth`` in the ❗┃auth-here┃❗ channel"
             )
         except Exception as e:
-            c = self.client.get_channel(auth_channel)
+            c = self.client.get_channel(ids.auth_channel)
             await c.send(f"Hi {member.mention}, welcome to the NUCATS Discord server!\n"
                          f"It seems like your privacy settings are preventing our bot messaging you.\n"
                          f"Please change your settings and type ``!auth`` in this channel.")
@@ -37,6 +38,13 @@ class OnMemberJoin(commands.Cog):
     async def on_member_unban(self, guild, member):
         await tools.log(self.client, f"``{member}`` was unbanned from the server")
 
+    @commands.Cog.listener()
+    async def on_message_delete(self, message):
+        embed = discord.Embed(description=message.content)
+
+        channel = self.client.get_channel(ids.bot_logs_channel)
+        await channel.send(f"``{message.author}``'s message in {message.channel} was deleted", embed=embed)
+
 
 async def setup(client):
-    await client.add_cog(OnMemberJoin(client))
+    await client.add_cog(Events(client))

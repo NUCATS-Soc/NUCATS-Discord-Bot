@@ -1,6 +1,7 @@
 # Ids for server channels and roles
 server_id = 1011277165872021504
 auth_channel = 1011294492869001327
+bot_logs_channel = 1011294949679059015
 
 verified_role = 1011283236497932318
 member_role = 1015604503715786906
