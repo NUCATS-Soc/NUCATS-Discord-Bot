@@ -2,3 +2,4 @@
 /auth_password.txt
 /venv/
 /logs/
+/database.py

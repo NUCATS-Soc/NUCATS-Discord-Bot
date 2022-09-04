@@ -1,8 +1,55 @@
 import asyncio
 import re
 import discord
+import mysql.connector
+from mysql.connector import Error
 
+import database
 import ids
+
+
+async def queryInsert(string):
+    try:
+        connection = mysql.connector.connect(host=database.host,
+                                             database=database.database,
+                                             user=database.user,
+                                             password=database.password)
+        if connection.is_connected():
+            db_Info = connection.get_server_info()
+            print("Connected to MySQL Server version ", db_Info)
+            cursor = connection.cursor()
+            cursor.execute(string)
+            connection.commit()
+            print(cursor.rowcount, "Record inserted successfully into table")
+            cursor.close()
+    except Error as e:
+        print("Error while connecting to MySQL", e)
+    finally:
+        if connection.is_connected():
+            connection.close()
+            print("MySQL connection is closed")
+
+
+async def querySelect(string):
+    try:
+        connection = mysql.connector.connect(host=database.host,
+                                             database=database.database,
+                                             user=database.user,
+                                             password=database.password)
+        if connection.is_connected():
+            db_Info = connection.get_server_info()
+            print("Connected to MySQL Server version ", db_Info)
+            cursor = connection.cursor()
+            cursor.execute(string)
+            result = cursor.fetchall()
+            return result
+    except Error as e:
+        print("Error while connecting to MySQL", e)
+    finally:
+        if connection.is_connected():
+            connection.close()
+            cursor.close()
+            print("MySQL connection is closed")
 
 
 async def log(client, value):
