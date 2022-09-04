@@ -1,5 +1,7 @@
 import requests
 from discord.ext import commands
+
+import ids
 import tools
 
 
@@ -10,10 +12,12 @@ class CommitteePoints(commands.Cog):
 
     @commands.command()
     async def points(self, ctx, name):
+        if ctx.channel.id not in ids.committee_group:
+            return
+
         name = name.lower()
         if name in ["all", "*"]:
             results = await tools.querySelect(f"""SELECT * FROM committee_points;""")
-            print(results)
             await ctx.channel.send("**Committee Points:**")
             for item in results:
                 await ctx.channel.send(f"{item[0]} - {item[1]}".capitalize())
@@ -23,6 +27,9 @@ class CommitteePoints(commands.Cog):
 
     @commands.command()
     async def add_points(self, ctx, name, value):
+        if ctx.channel.id not in ids.committee_group:
+            return
+
         name = name.lower()
         points = await tools.querySelect(f"""SELECT * FROM committee_points WHERE id = "{name}";""")
         points2 = points[0][1] + int(value)
@@ -31,6 +38,9 @@ class CommitteePoints(commands.Cog):
 
     @commands.command()
     async def add_user(self, ctx, name):
+        if ctx.channel.id not in ids.committee_group:
+            return
+
         name = name.lower()
         await tools.queryInsert(f"""INSERT INTO committee_points(id,points) VALUES("{name}", 0)""")
         await ctx.channel.send(f"Added {name.capitalize()}")

@@ -88,6 +88,9 @@ class Commands(commands.Cog):
 
     @commands.command()
     async def verified(self, ctx):
+        if ctx.channel.id not in ids.committee_group:
+            return
+
         server = ctx.message.guild
         member_role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.member_role)
 
