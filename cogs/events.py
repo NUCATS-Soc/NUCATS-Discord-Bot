@@ -45,6 +45,14 @@ class Events(commands.Cog):
         channel = self.client.get_channel(ids.bot_logs_channel)
         await channel.send(f"``{message.author}``'s message in {message.channel} was deleted", embed=embed)
 
+    @commands.Cog.listener()
+    async def on_message_edit(self, old_message, new_message):
+        embed = discord.Embed(title="Old Message:", description=old_message.content)
+        embed.add_field(name="New message:", value=new_message.content)
+
+        channel = self.client.get_channel(ids.bot_logs_channel)
+        await channel.send(f"``{old_message.author}``'s message in {old_message.channel} was edited", embed=embed)
+
 
 async def setup(client):
     await client.add_cog(Events(client))
