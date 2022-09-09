@@ -92,7 +92,6 @@ class Commands(commands.Cog):
             return
 
         server = ctx.message.guild
-        member_role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.member_role)
 
         ctx.send("**Verified members**")
         for member in server.members:
@@ -129,7 +128,7 @@ class Commands(commands.Cog):
                                 await tools.log(self.client,
                                                 f"``{member.display_name}`` has been given the **member** role")
 
-        await tools.log(self.client, f"{i} members have been given the member role")
+        await tools.log(self.client, f"{i} people have been given the member role")
 
 
 async def setup(client):
