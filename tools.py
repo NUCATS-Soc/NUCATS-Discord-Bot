@@ -3,6 +3,7 @@ import re
 import discord
 import mysql.connector
 from mysql.connector import Error
+from datetime import datetime
 
 import database
 import ids
@@ -55,6 +56,11 @@ async def querySelect(string):
 async def log(client, value):
     log_message = client.get_channel(ids.bot_logs_channel)
     await log_message.send(str(value))
+    format_chars = ["*", "`"]
+    for char in format_chars:
+        value = value.replace(char, "")
+
+    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {value}")
 
 
 async def check_student_number(student_number):
