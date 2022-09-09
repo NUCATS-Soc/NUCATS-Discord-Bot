@@ -172,7 +172,7 @@ class Authentication(commands.Cog):
 
         with open("logs/verified_users.csv", "a", newline="") as file:
             file_writer = writer(file)
-            file_writer.writerow([student_number.content, member.id])
+            file_writer.writerow([member.id, student_number.content])
             file.close()
 
 
