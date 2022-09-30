@@ -16,7 +16,8 @@ class Events(commands.Cog):
         try:
             await member.send(
                 f"Hi {member.name}, welcome to the NUCATS Discord server!\n"
-                f"To gain access to the rest of the server, type ``!auth`` in the ❗┃auth-here┃❗ channel"
+                f"To gain access to the rest of the server, type ``!auth`` in the ❗┃auth-here┃❗ channel\n"
+                f"If you have any problems, message @tinyTim567#2879 (Tom | Secretary)"
             )
         except Exception as e:
             c = self.client.get_channel(ids.auth_channel)

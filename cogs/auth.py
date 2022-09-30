@@ -59,7 +59,7 @@ class Authentication(commands.Cog):
             server.sendmail("nucats.auth.no.reply@gmail.com", to, email_text)
             server.close()
         except discord.ClientException:
-            await ctx.author.send("Something went wrong. Please retry authentication or contact an admin.")
+            await ctx.author.send("Something went wrong. Please retry authentication or contact committee.")
 
         await ctx.author.send(
             "**Step 3/7** \nWe have emailed a verification code to: " + username.content + "@ncl.ac.uk \n" +
@@ -156,7 +156,8 @@ class Authentication(commands.Cog):
 
         await ctx.author.send("**🎉 You are now authenticated! 🎉**\n" +
                               "You should now have access to the server. \n" +
-                              "To change your pronouns, type ``!pronouns`` in this chat. \n"
+                              "If you have bought a membership, you will be give the member role shortly. \n" +
+                              "To change your pronouns, type ``!pronouns`` in this chat. \n" +
                               "If you have any issues, contact committee.")
 
         # Logs users details
