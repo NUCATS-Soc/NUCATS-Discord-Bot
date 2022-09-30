@@ -158,6 +158,7 @@ class Authentication(commands.Cog):
                               "You should now have access to the server. \n" +
                               "If you have bought a membership, you will be give the member role shortly. \n" +
                               "To change your pronouns, type ``!pronouns`` in this chat. \n" +
+                              "Channels have descriptions explaining what they are for and how everything works. " +
                               "If you have any issues, contact committee.")
 
         # Logs users details
