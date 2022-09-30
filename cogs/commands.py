@@ -54,6 +54,12 @@ class Commands(commands.Cog):
         embed = discord.Embed(title=jokejson["joke"], colour=discord.Color.random())
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=["rule"], brief="Outputs the server rules", description="Outputs the server rules")
+    async def rules(self, ctx):
+        with open("rules.txt") as f:
+            lines = f.read()
+        await ctx.author.send(lines)
+
     @commands.command(aliases=["pronoun"], brief="Changes pronouns", description="Updates a users pronoun roles")
     async def pronouns(self, ctx):
         reaction, user = await tools.get_user_pronouns(self.client, ctx)
