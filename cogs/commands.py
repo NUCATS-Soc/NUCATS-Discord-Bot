@@ -58,7 +58,7 @@ class Commands(commands.Cog):
     async def rules(self, ctx):
         with open("rules.txt") as f:
             lines = f.read()
-        await ctx.author.send(lines)
+        await ctx.send(lines)
 
     @commands.command(aliases=["pronoun"], brief="Changes pronouns", description="Updates a users pronoun roles")
     async def pronouns(self, ctx):
