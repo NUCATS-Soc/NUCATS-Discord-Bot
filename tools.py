@@ -73,15 +73,18 @@ async def check_student_number(student_number):
         return False
 
 
-async def user_input_dm(client, ctx, str):
-    while True:
-        msg = await client.wait_for("message")
-        if ctx.author == msg.author and isinstance(msg.channel, discord.channel.DMChannel):
-            if msg.content.lower() == str.lower() or re.match(str, msg.content.lower()):
-                break
-            else:
-                await ctx.author.send("Invalid input, please try again")
-    return msg
+async def user_input_dm(client, ctx, str, timeout=None):
+
+    def check(msg):
+        return ctx.author == msg.author and isinstance(msg.channel, discord.channel.DMChannel) and msg.content.lower() == str.lower() or re.match(str, msg.content.lower())
+
+    try:
+        msg = await client.wait_for("message", timeout=timeout, check=check)
+    except asyncio.TimeoutError:
+        await ctx.author.send("You did not respond in time. Please try again. ")
+        return None
+    else:
+        return msg
 
 
 async def get_user_pronouns(client, ctx, timeout=60.0):
@@ -104,5 +107,6 @@ async def get_user_pronouns(client, ctx, timeout=60.0):
         reaction, user = await client.wait_for("reaction_add", timeout=timeout, check=check)
     except asyncio.TimeoutError:
         await ctx.author.send("You did not react to the post in time. Type ``!pronouns`` to try again.")
+        return None, None
     else:
         return reaction, user

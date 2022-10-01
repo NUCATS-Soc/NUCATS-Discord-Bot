@@ -1,3 +1,5 @@
+import asyncio
+
 import discord
 from discord.ext import commands
 from csv import writer
@@ -30,14 +32,20 @@ class Authentication(commands.Cog):
                               "**Step 1/7** \n"
                               "Please enter your university student number (i.e. 180289690 or 210239379):")
 
-        student_number = await tools.user_input_dm(self.client, ctx, r"^\d{9}$")
+        student_number = await tools.user_input_dm(self.client, ctx, r"^\d{9}$", 60.0)
+        if student_number is None:
+            await tools.log(self.client, "``" + str(ctx.author) + "`` did not respond to auth in time")
+            return
 
         # Gets the users email address
 
         await ctx.author.send(
             "Thank you.\n**Step 2/7**\nPlease enter the first part of your university email address (i.e. J.L.Smith2 or C10239379):")
 
-        username = await tools.user_input_dm(self.client, ctx, r"^[0-9,a-z,A-Z,.]{1,30}$")
+        username = await tools.user_input_dm(self.client, ctx, r"^[0-9,a-z,A-Z,.]{1,30}$", 60.0)
+        if username is None:
+            await tools.log(self.client, "``" + str(ctx.author) + "`` did not respond to auth in time")
+            return
 
         # Generates a random auth code and emails this to the user
 
@@ -66,7 +74,9 @@ class Authentication(commands.Cog):
             "Please copy and paste it below.\n" +
             "(This email may be in your junk mail)")
 
-        await tools.user_input_dm(self.client, ctx, auth_code)
+        if await tools.user_input_dm(self.client, ctx, auth_code, 180.0) is None:
+            await tools.log(self.client, "``" + str(ctx.author) + "`` did not respond to auth in time")
+            return
 
         # Gets the user to accept the server rules
 
@@ -81,19 +91,29 @@ class Authentication(commands.Cog):
 
         # Gets the user to enter their real name to use on the server
 
-        await ctx.author.send(
-            "**Step 5/7** \nAs part of the rules of the NUCATS server we require everyone's Discord name " +
-            "to be their actual name.\n" +
-            "Please enter your preferred name below:")
+        if await ctx.author.send(
+                "**Step 5/7** \nAs part of the rules of the NUCATS server we require everyone's Discord name " +
+                "to be their actual name.\n" +
+                "Please enter your preferred name below:") is None:
+            await tools.log(self.client, "``" + str(ctx.author) + "`` did not respond to auth in time")
+            return
 
-        nickname = await tools.user_input_dm(self.client, ctx, r"\w{1,14}$")
+        nickname = await tools.user_input_dm(self.client, ctx, r"\w{1,14}$", 60.0)
+        if nickname is None:
+            await tools.log(self.client, "``" + str(ctx.author) + "`` did not respond to auth in time")
+            return
+
         await self.client.get_guild(ids.server_id).get_member(nickname.author.id).edit(
             nick=nickname.content)
 
         # Sets user pronouns
 
         await ctx.author.send("**Step 6/7**")
-        reaction, user = await tools.get_user_pronouns(self.client, ctx, None)
+        reaction, user = await tools.get_user_pronouns(self.client, ctx, 60.0)
+        if reaction is None or user is None:
+            await tools.log(self.client, "``" + str(ctx.author) + "`` did not respond to auth in time")
+            return
+
         member = self.client.get_guild(ids.server_id).get_member(user.id)
 
         if str(reaction) == "♂":
@@ -122,7 +142,11 @@ class Authentication(commands.Cog):
             "5 - Placement \n" +
             "6 - Post Grad \n" +
             "7 - Alumni")
-        stage = await tools.user_input_dm(self.client, ctx, r"[1-7]{1}$")
+        stage = await tools.user_input_dm(self.client, ctx, r"[1-7]{1}$", 60.0)
+        if stage is None:
+            await tools.log(self.client, "``" + str(ctx.author) + "`` did not respond to auth in time")
+            return
+
         member = self.client.get_guild(ids.server_id).get_member(stage.author.id)
         role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.first_year_role)
 
