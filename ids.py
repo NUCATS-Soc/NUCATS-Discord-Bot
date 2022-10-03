@@ -5,6 +5,8 @@ codewars_announcements_channel = 1026461371359043644
 codewars_chat_channel = 1026461290429943878
 codewars_log_channel = 1025810861111124049
 
+codewars_group = [codewars_announcements_channel, codewars_chat_channel, codewars_log_channel]
+
 # Information
 server_id = 1011277165872021504
 auth_channel = 1011294492869001327

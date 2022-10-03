@@ -90,6 +90,9 @@ class CodeWars(commands.Cog):
     @commands.command(brief="Lists how many have completed this weeks challenge",
                       description="Lists how many people have completed this weeks challenge")
     async def listStat(self, ctx):
+        if ctx.channel.id not in ids.codewars_group:
+            return
+
         response = await tools.querySelect(f"""SELECT * FROM codewars;""")
         responseValues = [i[1] for i in response]
 
