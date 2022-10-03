@@ -74,9 +74,9 @@ async def check_student_number(student_number):
 
 
 async def user_input_dm(client, ctx, str, timeout=None):
-
     def check(msg):
-        return ctx.author == msg.author and isinstance(msg.channel, discord.channel.DMChannel) and msg.content.lower() == str.lower() or re.match(str, msg.content.lower())
+        return ctx.author == msg.author and isinstance(msg.channel, discord.channel.DMChannel) and \
+               (msg.content.lower() == str.lower() or re.match(str, msg.content.lower()))
 
     try:
         msg = await client.wait_for("message", timeout=timeout, check=check)
