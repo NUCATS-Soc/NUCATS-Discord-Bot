@@ -11,7 +11,8 @@ class CodeWars(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command()
+    @commands.command(brief="Join codewars",
+                      description="Type !join username, where username is your codewars account name")
     async def join(self, ctx, username):
         if ctx.channel.id != ids.codewars_log_channel:
             return
@@ -35,7 +36,7 @@ class CodeWars(commands.Cog):
             await tools.log(self.client, f"CODEWARS - API response error: {str(response)}")
             await ctx.channel.send(f"An account could not be found for ``{username}``")
 
-    @commands.command()
+    @commands.command(brief="Draws this weeks winner", description="Draws this weeks winner")
     async def draw(self, ctx):
         if ctx.channel.id != ids.codewars_log_channel:
             return
@@ -69,7 +70,8 @@ class CodeWars(commands.Cog):
         await tools.log(self.client, f"CODEWARS - No winner could be drawn")
         await ctx.channel.send("No one has completed this weeks challenge 😭")
 
-    @commands.command()
+    @commands.command(brief="Sets this weeks challenge",
+                      description="Sets this weeks challenge and then posts an announcement")
     async def challenge(self, ctx, challenge_id):
         if ctx.channel.id != ids.bot_log_channel:
             return
@@ -85,7 +87,8 @@ class CodeWars(commands.Cog):
                                           f"🛠️ This weeks challenge is https://www.codewars.com/kata/{challenge_id} \n" +
                                           f"💸 Prize draw and new challenge released every week")
 
-    @commands.command()
+    @commands.command(brief="Lists how many have completed this weeks challenge",
+                      description="Lists how many people have completed this weeks challenge")
     async def listStat(self, ctx):
         response = await tools.querySelect(f"""SELECT * FROM codewars;""")
         responseValues = [i[1] for i in response]
