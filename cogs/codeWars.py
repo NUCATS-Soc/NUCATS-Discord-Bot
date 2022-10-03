@@ -42,19 +42,19 @@ class CodeWars(commands.Cog):
             return
 
         response = await tools.querySelect(f"""SELECT * FROM codewars;""")
-        responseDict = {}
+        response_dict = {}
 
         print(str(response))
         for i in response:
-            responseDict[i[0]] = i[1]
+            response_dict[i[0]] = i[1]
 
         with open("logs/codewars_challenge.txt", "r") as file:
             challenge_id = file.read()
 
         # Loops until all users have been checked
-        while bool(responseDict):
-            winner = random.sample(responseDict.keys(), 1)[0]
-            winner_username = responseDict.get(winner)
+        while bool(response_dict):
+            winner = random.sample(response_dict.keys(), 1)[0]
+            winner_username = response_dict.get(winner)
 
             response = requests.get(
                 f'https://www.codewars.com/api/v1/users/{winner_username}/code-challenges/completed')
@@ -65,7 +65,7 @@ class CodeWars(commands.Cog):
                     await tools.log(self.client, f'CODEWARS - ``{winner}`` has won the challenge')
                     await ctx.channel.send(f'<@{winner.id}> has completed the challenge so wins £5!!!')
                     return
-            del responseDict[winner]
+            del response_dict[winner]
 
         await tools.log(self.client, f"CODEWARS - No winner could be drawn")
         await ctx.channel.send("No one has completed this weeks challenge 😭")
@@ -87,29 +87,29 @@ class CodeWars(commands.Cog):
                                           f"🛠️ This weeks challenge is https://www.codewars.com/kata/{challenge_id} \n" +
                                           f"💸 Prize draw and new challenge released every week")
 
-    @commands.command(brief="Lists how many have completed this weeks challenge",
+    @commands.command(aliases=["list_stats"], brief="Lists how many have completed this weeks challenge",
                       description="Lists how many people have completed this weeks challenge")
-    async def listStat(self, ctx):
+    async def list_stat(self, ctx):
         if ctx.channel.id not in ids.codewars_group:
             return
 
         response = await tools.querySelect(f"""SELECT * FROM codewars;""")
-        responseValues = [i[1] for i in response]
+        response_values = [i[1] for i in response]
 
         with open("logs/codewars_challenge.txt", "r") as file:
             challenge_id = file.read()
 
         complete = 0
         total = 0
-        for k in responseValues:
+        for k in response_values:
             total = total + 1
             out = False
             user = str(k)
             response = requests.get(f'https://www.codewars.com/api/v1/users/{user}/code-challenges/completed')
-            resObject = response.json()
+            res_object = response.json()
             try:
-                for obj in resObject["data"]:
-                    if (str(obj["id"]) == challenge_id):
+                for obj in res_object["data"]:
+                    if str(obj["id"]) == challenge_id:
                         complete = complete + 1
             except Exception:
                 total = total - 1
