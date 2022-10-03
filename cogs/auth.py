@@ -30,7 +30,7 @@ class Authentication(commands.Cog):
                               "**Step 1/7** \n"
                               "Please enter your university student number (i.e. 180289690 or 210239379):")
 
-        student_number = await tools.user_input_dm(self.client, ctx, r"^\d{9}$", 60.0)
+        student_number = await tools.user_input_dm(self.client, ctx, r"^\d{9}$", 90.0)
         if student_number is None:
             await tools.log(self.client, "``" + str(ctx.author) + "`` did not respond to auth in time")
             return
@@ -72,7 +72,7 @@ class Authentication(commands.Cog):
             "Please copy and paste it below.\n" +
             "(This email may be in your junk mail)")
 
-        if await tools.user_input_dm(self.client, ctx, auth_code, 180.0) is None:
+        if await tools.user_input_dm(self.client, ctx, auth_code, 240.0) is None:
             await tools.log(self.client, "``" + str(ctx.author) + "`` did not respond to auth in time")
             return
 
@@ -107,7 +107,7 @@ class Authentication(commands.Cog):
         # Sets user pronouns
 
         await ctx.author.send("**Step 6/7**")
-        reaction, user = await tools.get_user_pronouns(self.client, ctx, 60.0)
+        reaction, user = await tools.get_user_pronouns(self.client, ctx, 90.0)
         if reaction is None or user is None:
             await tools.log(self.client, "``" + str(ctx.author) + "`` did not respond to auth in time")
             return
