@@ -54,7 +54,7 @@ async def querySelect(string):
 
 
 async def log(client, value):
-    log_message = client.get_channel(ids.bot_logs_channel)
+    log_message = client.get_channel(ids.bot_log_channel)
     await log_message.send(str(value))
     format_chars = ["*", "`"]
     for char in format_chars:

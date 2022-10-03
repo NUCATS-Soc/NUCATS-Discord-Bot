@@ -1,5 +1,10 @@
 # Ids for server channels and roles
 
+# Codewars
+codewars_announcements_channel = 1026461371359043644
+codewars_chat_channel = 1026461290429943878
+codewars_log_channel = 1025810861111124049
+
 # Information
 server_id = 1011277165872021504
 auth_channel = 1011294492869001327
@@ -13,11 +18,11 @@ agenda_minutes_channel = 1011280051641274540
 social_planning_channel = 1011280318336073748
 gaming_planning_channel = 1011280355887689799
 server_updates_channel = 1011283526345293836
-bot_logs_channel = 1011294949679059015
+bot_log_channel = 1011294949679059015
 the_senate_voice_channel = 1011279865808424960
 
 committee_group = [committee_channel, plans_channel, agenda_minutes_channel, social_planning_channel,
-                   gaming_planning_channel, server_updates_channel, bot_logs_channel, the_senate_voice_channel]
+                   gaming_planning_channel, server_updates_channel, bot_log_channel, the_senate_voice_channel]
 
 # Text
 general_channel = 1011277166371156064
