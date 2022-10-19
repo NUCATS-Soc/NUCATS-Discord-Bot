@@ -62,6 +62,7 @@ mile_castle_voice_channel = 1011277166794788866
 # Roles
 verified_role = 1011283236497932318
 member_role = 1015604503715786906
+committee_role = 1011277576230154260
 
 first_year_role = 1011278798995591238
 second_year_role = 1011278845825003602

@@ -13,6 +13,7 @@ class CodeWars(commands.Cog):
 
     @commands.command(brief="Join codewars",
                       description="Type !join username, where username is your codewars account name")
+    @commands.guild_only()
     async def join(self, ctx, username):
         if ctx.channel.id != ids.codewars_log_channel:
             return
@@ -37,6 +38,8 @@ class CodeWars(commands.Cog):
             await ctx.channel.send(f"An account could not be found for ``{username}``")
 
     @commands.command(brief="Draws this weeks winner", description="Draws this weeks winner")
+    @commands.has_role(ids.committee_role)
+    @commands.guild_only()
     async def draw(self, ctx):
         if ctx.channel.id != ids.codewars_log_channel:
             return
@@ -72,6 +75,8 @@ class CodeWars(commands.Cog):
 
     @commands.command(brief="Sets this weeks challenge",
                       description="Sets this weeks challenge and then posts an announcement")
+    @commands.has_role(ids.committee_role)
+    @commands.guild_only()
     async def challenge(self, ctx, challenge_id):
         if ctx.channel.id != ids.bot_log_channel:
             return
@@ -89,6 +94,7 @@ class CodeWars(commands.Cog):
 
     @commands.command(aliases=["list_stats"], brief="Lists how many have completed this weeks challenge",
                       description="Lists how many people have completed this weeks challenge")
+    @commands.guild_only()
     async def list_stat(self, ctx):
         if ctx.channel.id not in ids.codewars_group:
             return
