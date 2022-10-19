@@ -61,6 +61,7 @@ class Commands(commands.Cog):
         await ctx.send(lines)
 
     @commands.command(aliases=["pronoun"], brief="Changes pronouns", description="Updates a users pronoun roles")
+    @commands.dm_only()
     async def pronouns(self, ctx):
         reaction, user = await tools.get_user_pronouns(self.client, ctx)
 
@@ -93,6 +94,8 @@ class Commands(commands.Cog):
         await tools.log(self.client, f"``{user}`` changed their pronouns to ``{pronouns}``")
 
     @commands.command(brief="Shows all verified users", description="Shows all verified users and their discord ids")
+    @commands.has_role(ids.committee_role)
+    @commands.guild_only()
     async def verified(self, ctx):
         if ctx.channel.id not in ids.committee_group:
             return
@@ -108,6 +111,8 @@ class Commands(commands.Cog):
 
     @commands.command(brief="Assigns the member role",
                       description="Gives all paying members who have validate the member role")
+    @commands.has_role(ids.committee_role)
+    @commands.guild_only()
     async def validate_members(self, ctx):
         if ctx.channel.id not in ids.committee_group:
             return

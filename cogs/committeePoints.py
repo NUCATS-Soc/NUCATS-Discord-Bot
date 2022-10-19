@@ -10,6 +10,8 @@ class CommitteePoints(commands.Cog):
         self.client = client
 
     @commands.command()
+    @commands.has_role(ids.committee_role)
+    @commands.guild_only()
     async def points(self, ctx, name):
         if ctx.channel.id not in ids.committee_group:
             return
@@ -25,6 +27,8 @@ class CommitteePoints(commands.Cog):
             await ctx.channel.send(f"{results[0][0]} has {results[0][1]} points".capitalize())
 
     @commands.command()
+    @commands.has_role(ids.committee_role)
+    @commands.guild_only()
     async def add_points(self, ctx, name, value):
         if ctx.channel.id not in ids.committee_group:
             return
@@ -36,6 +40,8 @@ class CommitteePoints(commands.Cog):
         await ctx.channel.send(f"Added {value} points to {name.capitalize}!")
 
     @commands.command()
+    @commands.has_role(ids.committee_role)
+    @commands.guild_only()
     async def add_user(self, ctx, name):
         if ctx.channel.id not in ids.committee_group:
             return
