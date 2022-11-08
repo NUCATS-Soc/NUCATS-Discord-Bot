@@ -52,7 +52,7 @@ class CodeWars(commands.Cog):
             response_dict[i[0]] = i[1]
 
         with open("logs/codewars_challenge.txt", "r") as file:
-            challenge_id = file.read()
+            challenge_id = file.readlines()[-1]
 
         # Loops until all users have been checked
         while bool(response_dict):
@@ -73,7 +73,7 @@ class CodeWars(commands.Cog):
         await tools.log(self.client, f"CODEWARS - No winner could be drawn")
         await ctx.channel.send("No one has completed this weeks challenge 😭")
 
-    @commands.command(brief="Sets this weeks challenge",
+    @commands.command(brief="Sets and announces this weeks challenge",
                       description="Sets this weeks challenge and then posts an announcement")
     @commands.has_role(ids.committee_role)
     @commands.guild_only()
@@ -81,10 +81,16 @@ class CodeWars(commands.Cog):
         if ctx.channel.id != ids.bot_log_channel:
             return
 
-        with open("logs/codewars_challenge.txt", "w") as file:
+        with open("logs/codewars_challenge.txt", "r") as file:
+            for line in file:
+                if challenge_id == line:
+                    await tools.log(self.client, f"Challenge ``{challenge_id}`` has already been used")
+                    return
+
+        with open("logs/codewars_challenge.txt", "a") as file:
             file.write(challenge_id)
 
-        await tools.log(self.client, f"Posting this weeks challenge")
+        await tools.log(self.client, "Posting challenge...")
 
         challenge_announcement = self.client.get_channel(ids.codewars_announcements_channel)
         await challenge_announcement.send(f"🔥  This weeks code wars challenge is now live @here! 🔥 \n" +
