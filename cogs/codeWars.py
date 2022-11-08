@@ -90,7 +90,7 @@ class CodeWars(commands.Cog):
         await challenge_announcement.send(f"🔥  This weeks code wars challenge is now live @here! 🔥 \n" +
                                           f"✨ Play each week for the chance to win a £5 voucher and improve your coding ability! \n" +
                                           f"🛠️ This weeks challenge is https://www.codewars.com/kata/{challenge_id} \n" +
-                                          f"💸 Prize draw and new challenge released every week")
+                                          f"💸 Prize draw and new challenge released every Sunday")
 
     @commands.command(aliases=["list_stats"], brief="Lists how many have completed this weeks challenge",
                       description="Lists how many people have completed this weeks challenge")
