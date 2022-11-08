@@ -109,7 +109,7 @@ class CodeWars(commands.Cog):
         response_values = [i[1] for i in response]
 
         with open("logs/codewars_challenge.txt", "r") as file:
-            challenge_id = file.read()
+            challenge_id = file.readlines()[-1]
 
         complete = 0
         total = 0
