@@ -25,16 +25,16 @@ class CodeWars(commands.Cog):
             if await tools.querySelect(f"""SELECT * FROM codewars WHERE id = '{ctx.author.id}'""") == []:
                 # Adds user to codewars db
                 await tools.queryInsert(f"""INSERT INTO codewars VALUES ('{str(ctx.author.id)}', '{username}');""")
-                await tools.log(self.client, f"CODEWARS - Added user ``{ctx.author}`` with account ``{username}``")
+                await tools.log(self.client, f"**CODEWARS** - Added user ``{ctx.author}`` with account ``{username}``")
                 await ctx.channel.send(f"Added ``{username}`` to codewars!")
             else:
                 await tools.log(self.client,
-                                f"CODEWARS - Failed to add user ``{ctx.author}`` (Account already registered)")
+                                f"**CODEWARS** - Failed to add user ``{ctx.author}`` (Account already registered)")
                 await ctx.channel.send(f"User ``{ctx.author}`` has already registered a codewars account")
 
         else:
             # Account doesn't exist
-            await tools.log(self.client, f"CODEWARS - API response error: {str(response)}")
+            await tools.log(self.client, f"**CODEWARS** - API response error: ``{str(response)}``")
             await ctx.channel.send(f"An account could not be found for ``{username}``")
 
     @commands.command(brief="Draws this weeks winner", description="Draws this weeks winner")
@@ -65,12 +65,12 @@ class CodeWars(commands.Cog):
             for obj in res_object["data"]:
                 if obj["id"] == challenge_id:
                     winner = await self.client.fetch_user(winner)
-                    await tools.log(self.client, f'CODEWARS - ``{winner}`` has won the challenge')
+                    await tools.log(self.client, f'**CODEWARS** - ``{winner}`` has won the challenge')
                     await ctx.channel.send(f'<@{winner.id}> has completed the challenge so wins £5!!!')
                     return
             del response_dict[winner]
 
-        await tools.log(self.client, f"CODEWARS - No winner could be drawn")
+        await tools.log(self.client, f"**CODEWARS** - No winner could be drawn")
         await ctx.channel.send("No one has completed this weeks challenge 😭")
 
     @commands.command(brief="Sets and announces this weeks challenge",
@@ -97,6 +97,8 @@ class CodeWars(commands.Cog):
                                           f"✨ Play each week for the chance to win a £5 voucher and improve your coding ability! \n" +
                                           f"🛠️ This weeks challenge is https://www.codewars.com/kata/{challenge_id} \n" +
                                           f"💸 Prize draw and new challenge released every Sunday")
+
+        await tools.log(self.client, f"Challenge ``{challenge_id}`` has been posted")
 
     @commands.command(aliases=["list_stats"], brief="Lists how many have completed this weeks challenge",
                       description="Lists how many people have completed this weeks challenge")

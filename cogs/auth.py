@@ -30,7 +30,7 @@ class Authentication(commands.Cog):
                               "**Step 1/7** \n"
                               "Please enter your university student number (i.e. 180289690 or 210239379):")
 
-        student_number = await tools.user_input_dm(self.client, ctx, r"^\d{9}$", 90.0)
+        student_number = await tools.user_input_dm(self.client, ctx, r"^\d{9}$", 180.0)
         if student_number is None:
             await tools.log(self.client, "``" + str(ctx.author) + "`` did not respond to auth in time")
             return
@@ -68,7 +68,7 @@ class Authentication(commands.Cog):
             await ctx.author.send("Something went wrong. Please retry authentication or contact committee.")
 
         await ctx.author.send(
-            "**Step 3/7** \nWe have emailed a verification code to: " + username.content + "@ncl.ac.uk \n" +
+            "**Step 3/7** \nWe have emailed a verification code to: ``" + username.content + "@ncl.ac.uk`` \n" +
             "Please copy and paste it below.\n" +
             "(This email may be in your junk mail)")
 
@@ -185,7 +185,7 @@ class Authentication(commands.Cog):
 
         # Logs users details
         await tools.log(self.client,
-                        f"``{username.author}`` has authenticated. \n"
+                        f"``{username.author}`` has authenticated \n"
                         f"  - Nickname ``{nickname.content}`` \n"
                         f"  - Student Number ``{student_number.content} \n``"
                         f"  - Email ``{username.content}`` \n"
