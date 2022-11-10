@@ -81,6 +81,11 @@ async def log(client, value):
 
 
 async def check_student_number(student_number):
+    """Checks if a given student number is valid
+
+    :param student_number: String to be checked
+    :return: True if valid, false if invalid
+    """
     if len(student_number) != 8:
         return False
     regex = r'^([A-C|a-c])\d{7}$'
