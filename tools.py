@@ -21,8 +21,8 @@ async def query_insert(string):
                                              user=database.user,
                                              password=database.password)
         if connection.is_connected():
-            db_Info = connection.get_server_info()
-            print("Connected to MySQL Server version ", db_Info)
+            db_info = connection.get_server_info()
+            print("Connected to MySQL Server version ", db_info)
             cursor = connection.cursor()
             cursor.execute(string)
             connection.commit()
@@ -50,8 +50,8 @@ async def query_select(string):
                                              user=database.user,
                                              password=database.password)
         if connection.is_connected():
-            db_Info = connection.get_server_info()
-            print("Connected to MySQL Server version ", db_Info)
+            db_info = connection.get_server_info()
+            print("Connected to MySQL Server version ", db_info)
             cursor = connection.cursor()
             cursor.execute(string)
             result = cursor.fetchall()
@@ -105,9 +105,9 @@ async def user_input_dm(client, ctx, reg_str, timeout=None):
     :return: Validated message or None if validation failed
     """
 
-    def check(msg):
-        return ctx.author == msg.author and isinstance(msg.channel, discord.channel.DMChannel) and \
-               (msg.content.lower() == str.lower() or re.match(reg_str, msg.content.lower()))
+    def check(message):
+        return ctx.author == message.author and isinstance(message.channel, discord.channel.DMChannel) and \
+               (message.content.lower() == str.lower() or re.match(reg_str, message.content.lower()))
 
     try:
         msg = await client.wait_for("message", timeout=timeout, check=check)
@@ -130,7 +130,8 @@ async def get_user_pronouns(client, ctx, timeout=60.0):
                                            "♂ - He/him \n" +
                                            "♀ - She/her \n" +
                                            "⚧ - They/them \n" +
-                                           "If your Pronoun is not here, please message committee and we will sort it :) \n" +
+                                           "If your Pronoun is not here, please message committee and we will sort it "
+                                           ":) \n" +
                                            "You can change your pronouns later")
 
     # Reacts to its own post
