@@ -100,7 +100,7 @@ class CodeWars(commands.Cog):
 
         await tools.log(self.client, f"Challenge ``{challenge_id}`` has been posted")
 
-    @commands.command(aliases=["list_stats"], brief="Lists how many have completed this weeks challenge",
+    @commands.command(aliases=["list_stats", "list", "stat", "stats", "liststat", "liststats"], brief="Lists how many have completed this weeks challenge",
                       description="Lists how many people have completed this weeks challenge")
     @commands.guild_only()
     async def list_stat(self, ctx):
