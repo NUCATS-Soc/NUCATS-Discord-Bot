@@ -23,8 +23,10 @@ async def queryInsert(string):
             connection.commit()
             print(cursor.rowcount, "Record inserted successfully into table")
             cursor.close()
+            return True
     except Error as e:
         print("Error while connecting to MySQL", e)
+        return False
     finally:
         if connection.is_connected():
             connection.close()
