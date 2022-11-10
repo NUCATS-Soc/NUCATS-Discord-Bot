@@ -24,14 +24,24 @@ class CodeWars(commands.Cog):
         response = requests.get("https://www.codewars.com/api/v1/users/" + username)
         if response.status_code == 200:
             # Checks if user has already been added
-            if await tools.querySelect(f"""SELECT * FROM codewars WHERE id = '{ctx.author.id}'""") == []:
+            if await tools.query_select(f"""SELECT * FROM codewars WHERE id = '{ctx.author.id}'""") == []:
                 # Adds user to codewars db
-                await tools.queryInsert(f"""INSERT INTO codewars VALUES ('{str(ctx.author.id)}', '{username}');""")
-                await tools.log(self.client, f"**CODEWARS** - Added user ``{ctx.author}`` with account ``{username}``")
-                await ctx.channel.send(f"Added ``{username}`` to codewars!")
+                if await tools.query_insert(f"""INSERT INTO codewars VALUES ('{str(ctx.author.id)}', '{username}');"""):
+                    # Account added successfully
+                    await tools.log(self.client,
+                                    f"**CODEWARS** - Added user ``{ctx.author}`` with account ``{username}``")
+                    await ctx.channel.send(f"Added ``{username}`` to codewars!")
+                else:
+                    # Could not access the database
+                    await tools.log(self.client,
+                                    f"**CODEWARS** - Failed to add user ``{ctx.author}`` with username ``{username}`` "
+                                    f"(Failed to update the database)")
+                    await ctx.channel.send(f"An error occurred when adding user ``{username}``. Please try again later")
             else:
+                # Account already linked to discord user
                 await tools.log(self.client,
-                                f"**CODEWARS** - Failed to add user ``{ctx.author}`` (Account already registered)")
+                                f"**CODEWARS** - Failed to add user ``{ctx.author}`` with account ``{username}`` "
+                                f"(Account already registered)")
                 await ctx.channel.send(f"User ``{ctx.author}`` has already registered a codewars account")
 
         else:
@@ -46,7 +56,7 @@ class CodeWars(commands.Cog):
         if ctx.channel.id != ids.codewars_log_channel:
             return
 
-        response = await tools.querySelect(f"""SELECT * FROM codewars;""")
+        response = await tools.query_select(f"""SELECT * FROM codewars;""")
         response_dict = {}
 
         print(str(response))
@@ -114,7 +124,7 @@ class CodeWars(commands.Cog):
             challenge_id = file.readlines()[-1]
 
         if user == "":
-            response = await tools.querySelect(f"""SELECT * FROM codewars;""")
+            response = await tools.query_select(f"""SELECT * FROM codewars;""")
             response_values = [i[1] for i in response]
 
             complete = 0
