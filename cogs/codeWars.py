@@ -1,4 +1,6 @@
 import random
+import typing
+
 import requests
 from discord.ext import commands
 
@@ -100,35 +102,47 @@ class CodeWars(commands.Cog):
 
         await tools.log(self.client, f"Challenge ``{challenge_id}`` has been posted")
 
-    @commands.command(aliases=["list_stats", "list", "stat", "stats", "liststat", "liststats"], brief="Lists how many have completed this weeks challenge",
+    @commands.command(aliases=["list_stats", "list", "stat", "stats", "liststat", "liststats"],
+                      brief="Lists how many have completed this weeks challenge",
                       description="Lists how many people have completed this weeks challenge")
     @commands.guild_only()
-    async def list_stat(self, ctx):
+    async def list_stat(self, ctx, user=""):
         if ctx.channel.id not in ids.codewars_group:
             return
-
-        response = await tools.querySelect(f"""SELECT * FROM codewars;""")
-        response_values = [i[1] for i in response]
 
         with open("logs/codewars_challenge.txt", "r") as file:
             challenge_id = file.readlines()[-1]
 
-        complete = 0
-        total = 0
-        for k in response_values:
-            total = total + 1
-            out = False
-            user = str(k)
+        if user == "":
+            response = await tools.querySelect(f"""SELECT * FROM codewars;""")
+            response_values = [i[1] for i in response]
+
+            complete = 0
+            total = 0
+            for k in response_values:
+                total = total + 1
+                out = False
+                user = str(k)
+                response = requests.get(f'https://www.codewars.com/api/v1/users/{user}/code-challenges/completed')
+                res_object = response.json()
+                try:
+                    for obj in res_object["data"]:
+                        if str(obj["id"]) == challenge_id:
+                            complete = complete + 1
+                except Exception:
+                    total = total - 1
+            await ctx.channel.send(
+                f"**{complete} / {total}** or **{int(100 * (complete / total))}%** have completed the challenge so far!")
+
+        else:
             response = requests.get(f'https://www.codewars.com/api/v1/users/{user}/code-challenges/completed')
             res_object = response.json()
             try:
                 for obj in res_object["data"]:
                     if str(obj["id"]) == challenge_id:
-                        complete = complete + 1
+                        await ctx.channel.send(f"``{user}`` has completed the challenge!")
             except Exception:
-                total = total - 1
-        await ctx.channel.send(
-            f'**{complete} / {total}** or **{int(100 * (complete / total))}%** have completed the challenge so far!')
+                await ctx.channel.send(f"``{user}`` has not completed the challenge yet")
 
 
 async def setup(client):
