@@ -76,8 +76,17 @@ async def log(client, value):
     format_chars = ["*", "`"]
     for char in format_chars:
         value = value.replace(char, "")
+    await log_to_server(value)
 
+
+async def log_to_server(value):
+    """Writes to the server log
+
+    :param value: Value to be logged
+    """
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {value}")
+    with open(f"logs/server/{datetime.now().strftime('%Y-%m-%d')}.txt", "a") as file:
+        file.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {value} \n")
 
 
 async def check_student_number(student_number):

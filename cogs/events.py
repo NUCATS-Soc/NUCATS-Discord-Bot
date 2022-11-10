@@ -45,6 +45,7 @@ class Events(commands.Cog):
 
         channel = self.client.get_channel(ids.bot_log_channel)
         await channel.send(f"``{message.author}``'s message in **{message.channel}** was deleted", embed=embed)
+        await tools.log_to_server(f"{message.author}'s message in {message.channel} was deleted")
 
     @commands.Cog.listener()
     async def on_message_edit(self, old_message, new_message):
@@ -53,6 +54,7 @@ class Events(commands.Cog):
 
         channel = self.client.get_channel(ids.bot_log_channel)
         await channel.send(f"``{old_message.author}``'s message in **{old_message.channel}** was edited", embed=embed)
+        await tools.log_to_server(f"{old_message.author}'s message in {old_message.channel} was edited")
 
 
 async def setup(client):
