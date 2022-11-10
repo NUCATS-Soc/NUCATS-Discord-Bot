@@ -8,6 +8,7 @@ import random
 import string
 import smtplib
 
+# Gets password for authing with the Google account
 with open("auth_password.txt") as file:
     auth_pw = file.read()
 
@@ -18,13 +19,14 @@ class Authentication(commands.Cog):
 
     @commands.command(brief="Starts the auth process",
                       description="Starts the auth process. Can only be executed in the auth channel")
+    @commands.guild_only()
     async def auth(self, ctx):
         if ctx.channel.id != ids.auth_channel:
             return
 
         await tools.log(self.client, "``" + str(ctx.author) + "`` has begun the authentication")
 
-        # Gets the users student number
+        # Gets the user's student number
 
         await ctx.author.send("Thank you for starting the NUCATS authentication process.\n" +
                               "**Step 1/7** \n"

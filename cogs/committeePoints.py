@@ -18,12 +18,12 @@ class CommitteePoints(commands.Cog):
 
         name = name.lower()
         if name in ["all", "*"]:
-            results = await tools.querySelect(f"""SELECT * FROM committee_points;""")
+            results = await tools.query_select(f"""SELECT * FROM committee_points;""")
             await ctx.channel.send("**Committee Points:**")
             for item in results:
                 await ctx.channel.send(f"{item[0]} - {item[1]}".capitalize())
         else:
-            results = await tools.querySelect(f"""SELECT * FROM committee_points WHERE id = "{name}";""")
+            results = await tools.query_select(f"""SELECT * FROM committee_points WHERE id = "{name}";""")
             await ctx.channel.send(f"{results[0][0]} has {results[0][1]} points".capitalize())
 
     @commands.command()
@@ -34,10 +34,12 @@ class CommitteePoints(commands.Cog):
             return
 
         name = name.lower()
-        points = await tools.querySelect(f"""SELECT * FROM committee_points WHERE id = "{name}";""")
+        points = await tools.query_select(f"""SELECT * FROM committee_points WHERE id = "{name}";""")
         points2 = points[0][1] + int(value)
-        await tools.queryInsert(f"""UPDATE committee_points SET points = {points2} WHERE id = "{name}";""")
-        await ctx.channel.send(f"Added {value} points to {name.capitalize}!")
+        if await tools.query_insert(f"""UPDATE committee_points SET points = {points2} WHERE id = "{name}";"""):
+            await ctx.channel.send(f"Added {value} points to {name.capitalize}!")
+        else:
+            await ctx.channel.send(f"Error - Failed to update the database")
 
     @commands.command()
     @commands.has_role(ids.committee_role)
@@ -47,8 +49,10 @@ class CommitteePoints(commands.Cog):
             return
 
         name = name.lower()
-        await tools.queryInsert(f"""INSERT INTO committee_points(id,points) VALUES("{name}", 0)""")
-        await ctx.channel.send(f"Added {name.capitalize()}")
+        if await tools.query_insert(f"""INSERT INTO committee_points(id,points) VALUES("{name}", 0)"""):
+            await ctx.channel.send(f"Added {name.capitalize()}")
+        else:
+            await ctx.channel.send(f"Error - Failed to update database")
 
 
 async def setup(client):
