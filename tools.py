@@ -152,6 +152,7 @@ async def get_user_pronouns(client, ctx, timeout=60.0):
         return user == ctx.author and str(reaction.emoji) in emojis
 
     try:
+        # Waits for reaction to post by user
         reaction, user = await client.wait_for("reaction_add", timeout=timeout, check=check)
     except asyncio.TimeoutError:
         await ctx.author.send("You did not react to the post in time. Type ``!pronouns`` to try again.")

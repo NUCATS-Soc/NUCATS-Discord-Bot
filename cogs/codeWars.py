@@ -55,6 +55,7 @@ class CodeWars(commands.Cog):
         if ctx.channel.id != ids.codewars_log_channel:
             return
 
+        # Gets all registered codewars users
         response = await tools.query_select(f"""SELECT * FROM codewars;""")
         response_dict = {}
 
@@ -70,6 +71,7 @@ class CodeWars(commands.Cog):
             winner = random.sample(response_dict.keys(), 1)[0]
             winner_username = response_dict.get(winner)
 
+            # Checks user has completed the challenge
             response = requests.get(
                 f'https://www.codewars.com/api/v1/users/{winner_username}/code-challenges/completed')
             res_object = response.json()
@@ -92,6 +94,7 @@ class CodeWars(commands.Cog):
         if ctx.channel.id != ids.bot_log_channel:
             return
 
+        # Checks if the challenge has been used before
         with open("logs/codewars_challenge.txt", "r") as file:
             for line in file:
                 if challenge_id == line:
@@ -119,10 +122,12 @@ class CodeWars(commands.Cog):
         if ctx.channel.id not in ids.codewars_group:
             return
 
+        # Gets the latest challenge
         with open("logs/codewars_challenge.txt", "r") as file:
             challenge_id = file.readlines()[-1]
 
         if user == "":
+            # Checks the total amount who have completed the challenge
             response = await tools.query_select(f"""SELECT * FROM codewars;""")
             response_values = [i[1] for i in response]
 
@@ -144,6 +149,7 @@ class CodeWars(commands.Cog):
                 f"**{complete} / {total}** or **{int(100 * (complete / total))}%** have completed the challenge so far!")
 
         else:
+            # Checks if the given user hass completed the challenge 
             response = requests.get(f'https://www.codewars.com/api/v1/users/{user}/code-challenges/completed')
             res_object = response.json()
             try:

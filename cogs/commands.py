@@ -113,7 +113,7 @@ class Commands(commands.Cog):
                       description="Gives all paying members who have validate the member role")
     @commands.has_role(ids.committee_role)
     @commands.guild_only()
-    async def validate_members(self, ctx):
+    async def give_member(self, ctx):
         if ctx.channel.id not in ids.committee_group:
             return
 

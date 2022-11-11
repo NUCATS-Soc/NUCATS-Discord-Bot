@@ -15,7 +15,7 @@ users, managing server roles and logging server updates.
 - `!nudog` - Gets a random image of a dog.
 - `!ran` - Returns a random number between two given values.
 - `!rules` - Displays the server rules.
-- `!validate_members` - Assigns the member role. Can only be executed by committee members.
+- `!give_member` - Assigns the member role. Can only be executed by committee members.
 - `!verified` - Returns a list of verified members display names and ids. Can only be executed by committee members.
 - `!pronouns` - DMs a user with options to change their preferred pronouns.
 
