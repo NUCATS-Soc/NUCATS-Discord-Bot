@@ -102,7 +102,7 @@ class CodeWars(commands.Cog):
                     return
 
         with open("logs/codewars_challenge.txt", "a") as file:
-            file.write(challenge_id)
+            file.write("\n" + challenge_id)
 
         await tools.log(self.client, "Posting challenge...")
 
@@ -118,7 +118,7 @@ class CodeWars(commands.Cog):
                       brief="Lists how many have completed this weeks challenge",
                       description="Lists how many people have completed this weeks challenge")
     @commands.guild_only()
-    async def list_stat(self, ctx, user=""):
+    async def list_stat(self, ctx):
         if ctx.channel.id not in ids.codewars_group:
             return
 
@@ -126,38 +126,26 @@ class CodeWars(commands.Cog):
         with open("logs/codewars_challenge.txt", "r") as file:
             challenge_id = file.readlines()[-1]
 
-        if user == "":
-            # Checks the total amount who have completed the challenge
-            response = await tools.query_select(f"""SELECT * FROM codewars;""")
-            response_values = [i[1] for i in response]
+        # Checks the total amount who have completed the challenge
+        response = await tools.query_select(f"""SELECT * FROM codewars;""")
+        response_values = [i[1] for i in response]
 
-            complete = 0
-            total = 0
-            for k in response_values:
-                total = total + 1
-                out = False
-                user = str(k)
-                response = requests.get(f'https://www.codewars.com/api/v1/users/{user}/code-challenges/completed')
-                res_object = response.json()
-                try:
-                    for obj in res_object["data"]:
-                        if str(obj["id"]) == challenge_id:
-                            complete = complete + 1
-                except Exception:
-                    total = total - 1
-            await ctx.channel.send(
-                f"**{complete} / {total}** or **{int(100 * (complete / total))}%** have completed the challenge so far!")
-
-        else:
-            # Checks if the given user hass completed the challenge 
+        complete = 0
+        total = 0
+        for k in response_values:
+            total = total + 1
+            out = False
+            user = str(k)
             response = requests.get(f'https://www.codewars.com/api/v1/users/{user}/code-challenges/completed')
             res_object = response.json()
             try:
                 for obj in res_object["data"]:
                     if str(obj["id"]) == challenge_id:
-                        await ctx.channel.send(f"``{user}`` has completed the challenge!")
+                        complete = complete + 1
             except Exception:
-                await ctx.channel.send(f"``{user}`` has not completed the challenge yet")
+                total = total - 1
+        await ctx.channel.send(
+            f"**{complete} / {total}** or **{int(100 * (complete / total))}%** have completed the challenge so far!")
 
 
 async def setup(client):
