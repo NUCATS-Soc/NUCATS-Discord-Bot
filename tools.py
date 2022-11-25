@@ -116,7 +116,7 @@ async def user_input_dm(client, ctx, reg_str, timeout=None):
 
     def check(message):
         return ctx.author == message.author and isinstance(message.channel, discord.channel.DMChannel) and \
-               (message.content.lower() == str.lower() or re.match(reg_str, message.content.lower()))
+               (message.content.lower() == reg_str.lower() or re.match(reg_str, message.content.lower()))
 
     try:
         msg = await client.wait_for("message", timeout=timeout, check=check)
