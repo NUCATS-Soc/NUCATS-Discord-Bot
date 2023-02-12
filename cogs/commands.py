@@ -102,7 +102,7 @@ class Commands(commands.Cog):
 
         server = ctx.message.guild
 
-        ctx.send("**Verified members**")
+        await ctx.send("**Verified members**")
         for member in server.members:
             for role in member.roles:
                 if role.id == ids.verified_role:
