@@ -1,5 +1,7 @@
 # NUCATS-Discord-Bot
 
+![NUCATS Logo](https://github.com/NUCATS-Soc/NUCATS-Discord-Bot/tree/main/github/github_banner.png "a title")
+
 This repository contains the discord bot for managing the NUCATS discord server. It includes features for authenticating
 users, managing server roles and logging server updates.
 
