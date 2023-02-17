@@ -74,4 +74,3 @@ they_them_role = 1012486431421247508
 
 testing_role = 1032271882529021963
 northumbria_student_role = 1061275573017641060
-
