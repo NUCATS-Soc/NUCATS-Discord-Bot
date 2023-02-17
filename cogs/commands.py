@@ -96,7 +96,7 @@ class Commands(commands.Cog):
     @commands.command(brief="Shows all verified users", description="Shows all verified users and their discord ids")
     @commands.has_role(ids.committee_role)
     @commands.guild_only()
-    async def verified(self, ctx):
+    async def get_verified(self, ctx):
         if ctx.channel.id not in ids.committee_group:
             return
 
@@ -130,14 +130,18 @@ class Commands(commands.Cog):
         for member in ctx.message.guild.members:
             for role in member.roles:
                 if role.id == ids.verified_role:
-                    if str(member.id) in verified_users.keys():
-                        student_number = verified_users.get(str(member.id))
-                        for student in members:
-                            if str(student) == str(student_number):
-                                i = i + 1
-                                await member.add_roles(member_role)
-                                await tools.log(self.client,
-                                                f"``{member.display_name}`` has been given the **member** role")
+
+                    # Checks the member is verified
+                    if str(member.id) not in verified_users.keys():
+                        break
+
+                    student_number = verified_users.get(str(member.id))
+                    for student in members:
+                        if str(student) == str(student_number):
+                            i = i + 1
+                            await member.add_roles(member_role)
+                            await tools.log(self.client,
+                                            f"``{member.display_name}`` has been given the **member** role")
 
         await tools.log(self.client, f"{i} people have been given the member role")
 
