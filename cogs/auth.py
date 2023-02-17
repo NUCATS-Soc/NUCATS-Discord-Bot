@@ -148,22 +148,22 @@ class Authentication(commands.Cog):
             return
 
         member = self.client.get_guild(ids.server_id).get_member(stage.author.id)
-        role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.first_year_role)
+        role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.stage_1_role)
 
         if stage.content == "1":
-            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.first_year_role)
+            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.stage_1_role)
 
         elif stage.content == "2":
-            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.second_year_role)
+            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.stage_2_role)
 
         elif stage.content == "3":
-            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.third_year_role)
+            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.stage_3_role)
 
         elif stage.content == "4":
-            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.fourth_year_role)
+            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.stage_4_role)
 
         elif stage.content == "5":
-            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.placement_year_role)
+            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.placement_role)
 
         elif stage.content == "6":
             role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.postgrad_role)
