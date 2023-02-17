@@ -117,6 +117,8 @@ class Commands(commands.Cog):
         if ctx.channel.id not in ids.committee_group:
             return
 
+        await tools.log(self.client, "Assigning member role... ")
+
         with open("logs/verified_users.csv", newline="") as file:
             reader = csv.reader(file)
             verified_users = dict(reader)
@@ -126,6 +128,7 @@ class Commands(commands.Cog):
 
         member_role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.member_role)
 
+        users_assigned_role = ""
         i = 0
         for member in ctx.message.guild.members:
             for role in member.roles:
@@ -140,10 +143,17 @@ class Commands(commands.Cog):
                         if str(student) == str(student_number):
                             i = i + 1
                             await member.add_roles(member_role)
-                            await tools.log(self.client,
-                                            f"``{member.display_name}`` has been given the **member** role")
 
-        await tools.log(self.client, f"{i} people have been given the member role")
+                            users_assigned_role += f"{member.display_name}, "
+                            await tools.log_to_server(f"``{member.display_name}`` has been given the **member** role")
+
+        # Logs to bot channel
+        embed = discord.Embed(title=f"Assigned **{i}** people the `member` role",
+                              description=f"`{users_assigned_role[:-2]}`")
+        channel = self.client.get_channel(ids.bot_log_channel)
+        await channel.send(embed=embed)
+
+        await tools.log_to_server(f"{i} people have been given the member role")
 
 
 async def setup(client):
