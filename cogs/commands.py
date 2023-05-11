@@ -144,12 +144,12 @@ class Commands(commands.Cog):
                             i = i + 1
                             await member.add_roles(member_role)
 
-                            users_assigned_role += f"{member.display_name}, "
+                            users_assigned_role += f"`{member.display_name}`, "
                             await tools.log_to_server(f"{member.display_name} has been given the member role")
 
         # Logs to bot channel
         embed = discord.Embed(title=f"Assigned **{i}** people the `member` role",
-                              description=f"`{users_assigned_role[:-2]}`")
+                              description=f"{users_assigned_role[:-2]}")
         channel = self.client.get_channel(ids.bot_log_channel)
         await channel.send(embed=embed)
 
