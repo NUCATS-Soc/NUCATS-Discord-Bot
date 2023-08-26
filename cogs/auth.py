@@ -189,7 +189,7 @@ class Authentication(commands.Cog):
         await tools.log(self.client,
                         f"``{username.author}`` has authenticated \n"
                         f"  - Nickname ``{nickname.content}`` \n"
-                        f"  - Student Number ``{student_number.content} \n``"
+                        f"  - Student Number ``{student_number.content}``\n"
                         f"  - Email ``{username.content}`` \n"
                         f"  - Stage ``{stage.content}`` \n"
                         f"  - Pronouns ``{pronoun}`` \n"
