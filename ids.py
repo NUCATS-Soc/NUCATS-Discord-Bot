@@ -1,6 +1,8 @@
 # Ids for server channels and roles
 server_id = 1011277165872021504
 
+bot_testing_channel = 1106202485661630565
+
 # Committee
 committee_channel = 1011279629870448751
 draft_announcements_channel = 1011280318336073748
