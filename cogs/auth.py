@@ -2,15 +2,11 @@ import discord
 from discord.ext import commands
 from csv import writer
 
-import ids
+from config import Config
 import tools
 import random
 import string
 import smtplib
-
-# Gets password for authing with the Google account
-with open("auth_password.txt") as file:
-    auth_pw = file.read()
 
 
 class Authentication(commands.Cog):
@@ -21,7 +17,7 @@ class Authentication(commands.Cog):
                       description="Starts the auth process. Can only be executed in the auth channel")
     @commands.guild_only()
     async def auth(self, ctx):
-        if ctx.channel.id != ids.auth_channel:
+        if ctx.channel.id != Config.get("AUTH_CHANNEL"):
             return
 
         await tools.log(self.client, "``" + str(ctx.author) + "`` has begun the authentication")
@@ -63,7 +59,7 @@ class Authentication(commands.Cog):
         try:
             server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
             server.ehlo()
-            server.login("nucats.auth.no.reply@gmail.com", auth_pw)
+            server.login("nucats.auth.no.reply@gmail.com", Config.get("GOOGLE_AUTH_PASSWORD"))
             server.sendmail("nucats.auth.no.reply@gmail.com", to, email_text)
             server.close()
         except discord.ClientException:
@@ -103,7 +99,7 @@ class Authentication(commands.Cog):
             await tools.log(self.client, "``" + str(ctx.author) + "`` did not respond to auth in time")
             return
 
-        await self.client.get_guild(ids.server_id).get_member(nickname.author.id).edit(
+        await self.client.get_guild(Config.get("SERVER_ID")).get_member(nickname.author.id).edit(
             nick=nickname.content)
 
         # Sets user pronouns
@@ -114,18 +110,18 @@ class Authentication(commands.Cog):
             await tools.log(self.client, "``" + str(ctx.author) + "`` did not respond to auth in time")
             return
 
-        member = self.client.get_guild(ids.server_id).get_member(user.id)
+        member = self.client.get_guild(Config.get("SERVER_ID")).get_member(user.id)
 
         if str(reaction) == "♂":
-            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.he_him_role)
+            role = discord.utils.get(self.client.get_guild(Config.get("SERVER_ID")).roles, id=Config.get("HE_HIM_ROLE"))
             pronoun = "He/him"
 
         elif str(reaction) == "♀":
-            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.she_her_role)
+            role = discord.utils.get(self.client.get_guild(Config.get("SERVER_ID")).roles, id=Config.get("SHE_HER_ROLE"))
             pronoun = "She/her"
 
         else:
-            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.they_them_role)
+            role = discord.utils.get(self.client.get_guild(Config.get("SERVER_ID")).roles, id=Config.get("THEY_THEM_ROLE"))
             pronoun = "They/them"
 
         await member.add_roles(role)
@@ -147,35 +143,35 @@ class Authentication(commands.Cog):
             await tools.log(self.client, "``" + str(ctx.author) + "`` did not respond to auth in time")
             return
 
-        member = self.client.get_guild(ids.server_id).get_member(stage.author.id)
-        role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.stage_1_role)
+        member = self.client.get_guild(Config.get("SERVER_ID")).get_member(stage.author.id)
+        role = discord.utils.get(self.client.get_guild(Config.get("SERVER_ID")).roles, id=Config.get("STAGE_1_ROLE"))
 
         if stage.content == "1":
-            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.stage_1_role)
+            role = discord.utils.get(self.client.get_guild(Config.get("SERVER_ID")).roles, id=Config.get("STAGE_1_ROLE"))
 
         elif stage.content == "2":
-            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.stage_2_role)
+            role = discord.utils.get(self.client.get_guild(Config.get("SERVER_ID")).roles, id=Config.get("STAGE_2_ROLE"))
 
         elif stage.content == "3":
-            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.stage_3_role)
+            role = discord.utils.get(self.client.get_guild(Config.get("SERVER_ID")).roles, id=Config.get("STAGE_3_ROLE"))
 
         elif stage.content == "4":
-            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.stage_4_role)
+            role = discord.utils.get(self.client.get_guild(Config.get("SERVER_ID")).roles, id=Config.get("STAGE_4_ROLE"))
 
         elif stage.content == "5":
-            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.placement_role)
+            role = discord.utils.get(self.client.get_guild(Config.get("SERVER_ID")).roles, id=Config.get("PLACEMENT_ROLE"))
 
         elif stage.content == "6":
-            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.postgrad_role)
+            role = discord.utils.get(self.client.get_guild(Config.get("SERVER_ID")).roles, id=Config.get("POSTGRAD_ROLE"))
 
         elif stage.content == "7":
-            role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.alumni_role)
+            role = discord.utils.get(self.client.get_guild(Config.get("SERVER_ID")).roles, id=Config.get("ALUMNI_ROLE"))
 
         await member.add_roles(role)
 
         # Gives the user verified role
 
-        role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.verified_role)
+        role = discord.utils.get(self.client.get_guild(Config.get("SERVER_ID")).roles, id=Config.get("VERIFIED_ROLE"))
         await member.add_roles(role)
 
         await ctx.author.send("**🎉 You are now authenticated! 🎉**\n" +

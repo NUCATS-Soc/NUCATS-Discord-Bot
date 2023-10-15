@@ -1,6 +1,6 @@
 from discord.ext import commands
 
-import ids
+from config import Config
 import tools
 
 
@@ -10,10 +10,10 @@ class CommitteePoints(commands.Cog):
         self.client = client
 
     @commands.command()
-    @commands.has_role(ids.committee_role)
+    @commands.has_role(Config.get("COMMITTEE_ROLE"))
     @commands.guild_only()
     async def points(self, ctx, name):
-        if ctx.channel.id not in ids.committee_group:
+        if ctx.channel.id not in Config.get("COMMITTEE_GROUP"):
             return
 
         name = name.lower()
@@ -27,10 +27,10 @@ class CommitteePoints(commands.Cog):
             await ctx.channel.send(f"{results[0][0]} has {results[0][1]} points".capitalize())
 
     @commands.command()
-    @commands.has_role(ids.committee_role)
+    @commands.has_role(Config.get("COMMITTEE_ROLE"))
     @commands.guild_only()
     async def add_points(self, ctx, name, value):
-        if ctx.channel.id not in ids.committee_group:
+        if ctx.channel.id not in Config.get("COMMITTEE_GROUP"):
             return
 
         name = name.lower()
@@ -42,10 +42,10 @@ class CommitteePoints(commands.Cog):
             await ctx.channel.send(f"Error - Failed to update the database")
 
     @commands.command()
-    @commands.has_role(ids.committee_role)
+    @commands.has_role(Config.get("COMMITTEE_ROLE"))
     @commands.guild_only()
     async def add_user(self, ctx, name):
-        if ctx.channel.id not in ids.committee_group:
+        if ctx.channel.id not in Config.get("COMMITTEE_GROUP"):
             return
 
         name = name.lower()
