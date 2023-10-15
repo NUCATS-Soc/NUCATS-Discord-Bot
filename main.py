@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 
 # Gets application token
-with open("token.txt") as file:
+with open("token.txt", encoding="utf-8") as file:
     token = file.read()
 
 intents = discord.Intents.all()

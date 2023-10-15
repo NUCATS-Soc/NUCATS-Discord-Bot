@@ -11,8 +11,14 @@ server_updates_channel = 1011283526345293836
 bot_log_channel = 1011294949679059015
 the_senate_voice_channel = 1011279865808424960
 
-committee_group = [committee_channel, draft_announcements_channel, event_planning_channel, server_updates_channel,
-                   bot_log_channel, the_senate_voice_channel]
+committee_group = [
+    committee_channel,
+    draft_announcements_channel,
+    event_planning_channel,
+    server_updates_channel,
+    bot_log_channel,
+    the_senate_voice_channel,
+]
 
 # Information
 information_channel = 1047520126620160041
@@ -36,7 +42,11 @@ codewars_announcements_channel = 1026461371359043644
 codewars_chat_channel = 1026461290429943878
 codewars_log_channel = 1025810861111124049
 
-codewars_group = [codewars_announcements_channel, codewars_chat_channel, codewars_log_channel]
+codewars_group = [
+    codewars_announcements_channel,
+    codewars_chat_channel,
+    codewars_log_channel,
+]
 
 # Gaming
 gaming_channel = 1011281140319010848

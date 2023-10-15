@@ -1,25 +1,30 @@
 import csv
+import random
+from typing import TYPE_CHECKING
 
 import discord
 from discord.ext import commands
 import aiohttp
-import random
 
 import ids
 import tools
 
+if TYPE_CHECKING:
+    from discord.client import Bot
+    from discord.ext.commands import Context
+
 
 class Commands(commands.Cog):
-    def __init__(self, client):
+    def __init__(self, client: "Bot"):
         self.client = client
 
     @commands.command(aliases=["random", "randomnumber", "rand", "randnum"], brief="Generates a random number",
                       description="Generates a random number between two given arguments.")
-    async def ran(self, ctx, number1, number2):
+    async def ran(self, ctx: "Context", number1: "str", number2: "str"):
         await ctx.channel.send("🎲 Your random number is : " + str(random.randint(int(number1), int(number2))))
 
     @commands.command(aliases=["flipcoin", "coin"], brief="Flips a coin", description="Flips a coin")
-    async def flip(self, ctx):
+    async def flip(self, ctx: "Context"):
         await ctx.channel.send(f"{ctx.message.author.mention}🪙 throws a coin in the air and it lands on....")
         if random.randint(0, 2) == 1:
             await ctx.channel.send("HEADS")
@@ -28,7 +33,7 @@ class Commands(commands.Cog):
 
     @commands.command(aliases=["dog", "dogs", "nudogs"], brief="Gets an image of a dog",
                       description="Gets a random image of a dog")
-    async def nudog(self, ctx):
+    async def nudog(self, ctx: "Context"):
         async with aiohttp.ClientSession() as session:
             request = await session.get("https://some-random-api.ml/img/dog")
             dogjson = await request.json()
@@ -38,7 +43,7 @@ class Commands(commands.Cog):
 
     @commands.command(aliases=["cat", "cats", "nucats"], brief="Gets an image of a cat",
                       description="Gets a random image of a cat")
-    async def nucat(self, ctx):
+    async def nucat(self, ctx: "Context"):
         async with aiohttp.ClientSession() as session:
             request = await session.get("https://some-random-api.ml/img/cat")
             dogjson = await request.json()
@@ -47,7 +52,7 @@ class Commands(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(brief="Tells a joke", description="Tells a joke")
-    async def joke(self, ctx):
+    async def joke(self, ctx: "Context"):
         async with aiohttp.ClientSession() as session:
             request = await session.get("https://some-random-api.ml/joke")
             jokejson = await request.json()
@@ -56,13 +61,13 @@ class Commands(commands.Cog):
 
     @commands.command(aliases=["rule"], brief="Outputs the server rules", description="Outputs the server rules")
     async def rules(self, ctx):
-        with open("rules.txt") as f:
+        with open("rules.txt", encoding="utf-8") as f:
             lines = f.read()
         await ctx.send(lines)
 
     @commands.command(aliases=["pronoun"], brief="Changes pronouns", description="Updates a users pronoun roles")
     @commands.dm_only()
-    async def pronouns(self, ctx):
+    async def pronouns(self, ctx: "Context"):
         reaction, user = await tools.get_user_pronouns(self.client, ctx)
 
         # Gets roles
@@ -96,7 +101,7 @@ class Commands(commands.Cog):
     @commands.command(brief="Shows all verified users", description="Shows all verified users and their discord ids")
     @commands.has_role(ids.committee_role)
     @commands.guild_only()
-    async def get_verified(self, ctx):
+    async def get_verified(self, ctx: "Context"):
         if ctx.channel.id not in ids.committee_group:
             return
 
@@ -113,17 +118,17 @@ class Commands(commands.Cog):
                       description="Gives all paying members who have validate the member role")
     @commands.has_role(ids.committee_role)
     @commands.guild_only()
-    async def give_member(self, ctx):
+    async def give_member(self, ctx: "Context"):
         if ctx.channel.id not in ids.committee_group:
             return
 
         await tools.log(self.client, "Assigning member role... ")
 
-        with open("logs/verified_users.csv", newline="") as file:
+        with open("logs/verified_users.csv", newline="", encoding="utf-8") as file:
             reader = csv.reader(file)
             verified_users = dict(reader)
 
-        with open("logs/members.txt") as file:
+        with open("logs/members.txt", encoding="utf-8") as file:
             members = file.read().split("\n")
 
         member_role = discord.utils.get(self.client.get_guild(ids.server_id).roles, id=ids.member_role)
@@ -156,5 +161,5 @@ class Commands(commands.Cog):
         await tools.log_to_server(f"{i} people have been given the member role")
 
 
-async def setup(client):
+async def setup(client: "Bot"):
     await client.add_cog(Commands(client))
