@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  discord-bot:
+    build: .
+    env_file: .env
+
+  mysql:
+    image: mysql:latest
+    env_file: .env
+    ports:
+      - "3306:3306"
+    volumes:
+      - /var/lib/mysql
