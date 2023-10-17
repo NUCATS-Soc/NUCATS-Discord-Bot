@@ -5,6 +5,7 @@ import mysql.connector
 from datetime import datetime
 
 from config import Config
+from logger import Logger
 
 
 async def query_insert(string):
@@ -58,21 +59,9 @@ async def log(client, value):
     :param value: Value to be logged
     """
     log_message = client.get_channel(Config.get("BOT_LOG_CHANNEL"))
-    await log_message.send(str(value))
-    format_chars = ["*", "`"]
-    for char in format_chars:
-        value = value.replace(char, "")
-    await log_to_server(value)
-
-
-async def log_to_server(value):
-    """Writes to the server log
-
-    :param value: Value to be logged
-    """
-    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {value}")
-    with open(f"logs/server/{datetime.now().strftime('%Y-%m-%d')}.txt", "a") as file:
-        file.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {value} \n")
+    if log_message is not None:
+        await log_message.send(str(value))
+    Logger.get_logger(__name__).info(value)
 
 
 async def check_student_number(student_number):
