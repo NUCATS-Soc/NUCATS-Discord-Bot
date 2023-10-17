@@ -1,6 +1,9 @@
+import traceback
+import sys
+
 import discord
 
-import ids
+from config import Config
 import tools
 from discord.ext import commands
 
@@ -20,7 +23,7 @@ class Events(commands.Cog):
                 f"If you have any problems, message @tinyTim567#2879 (Tom | Secretary)"
             )
         except Exception as e:
-            c = self.client.get_channel(ids.auth_channel)
+            c = self.client.get_channel(Config.get("AUTH_CHANNEL"))
             await c.send(f"Hi {member.mention}, welcome to the NUCATS Discord server!\n"
                          f"It seems like your privacy settings are preventing our bot messaging you.\n"
                          f"Please change your settings and type ``!auth`` in this channel.")
@@ -43,7 +46,7 @@ class Events(commands.Cog):
     async def on_message_delete(self, message):
         embed = discord.Embed(description=message.content)
 
-        channel = self.client.get_channel(ids.bot_log_channel)
+        channel = self.client.get_channel(Config.get("BOT_LOG_CHANNEL"))
         await channel.send(f"``{message.author}``'s message in **{message.channel}** was deleted", embed=embed)
         await tools.log_to_server(f"{message.author}'s message in {message.channel} was deleted")
 
@@ -52,10 +55,34 @@ class Events(commands.Cog):
         embed = discord.Embed(title="Old Message:", description=old_message.content)
         embed.add_field(name="New message:", value=new_message.content)
 
-        channel = self.client.get_channel(ids.bot_log_channel)
+        channel = self.client.get_channel(Config.get("BOT_LOG_CHANNEL"))
         await channel.send(f"``{old_message.author}``'s message in **{old_message.channel}** was edited", embed=embed)
         await tools.log_to_server(f"{old_message.author}'s message in {old_message.channel} was edited")
 
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        """The event triggered when an error is raised while invoking a command.
+
+        :param ctx: The context used for command invocation.
+        :param error: The Exception raised.
+        """
+        # This prevents any commands with local handlers being handled here in on_command_error.
+        if hasattr(ctx.command, 'on_error'):
+            return
+
+        ignored = (commands.CommandNotFound, )
+
+        # Allows us to check for original exceptions raised and sent to CommandInvokeError.
+        # If nothing is found. We keep the exception passed to on_command_error.
+        error = getattr(error, 'original', error)
+
+        # Anything in ignored will return and prevent anything happening.
+        if isinstance(error, ignored):
+            return
+
+        # All other Errors not returned come here. And we can just print the default TraceBack.
+        print(f"Ignoring exception in command {ctx.command}:", file=sys.stderr)
+        traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
 async def setup(client):
     await client.add_cog(Events(client))

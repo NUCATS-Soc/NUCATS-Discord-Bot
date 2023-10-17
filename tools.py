@@ -2,11 +2,10 @@ import asyncio
 import re
 import discord
 import mysql.connector
-from mysql.connector import Error
 from datetime import datetime
 
-import database
-import ids
+from config import Config
+from logger import Logger
 
 
 async def query_insert(string):
@@ -15,11 +14,12 @@ async def query_insert(string):
     :param string: SQL INSERT command
     :return: True if query succeeded, False if query failed
     """
-    try:
-        connection = mysql.connector.connect(host=database.host,
-                                             database=database.database,
-                                             user=database.user,
-                                             password=database.password)
+    with mysql.connector.connect(
+        host=Config.get("MYSQL_HOST"),
+        database=Config.get("MYSQL_DATABASE"),
+        user=Config.get("MYSQL_USER"),
+        password=Config.get("MYSQL_PASSWORD"),
+    ) as connection:
         if connection.is_connected():
             db_info = connection.get_server_info()
             print("Connected to MySQL Server version ", db_info)
@@ -29,13 +29,6 @@ async def query_insert(string):
             print(cursor.rowcount, "Record inserted successfully into table")
             cursor.close()
             return True
-    except Error as e:
-        print("Error while connecting to MySQL", e)
-        return False
-    finally:
-        if connection.is_connected():
-            connection.close()
-            print("MySQL connection is closed")
 
 
 async def query_select(string):
@@ -44,11 +37,12 @@ async def query_select(string):
     :param string: SQL SELECT query
     :return: Result of query
     """
-    try:
-        connection = mysql.connector.connect(host=database.host,
-                                             database=database.database,
-                                             user=database.user,
-                                             password=database.password)
+    with mysql.connector.connect(
+        host=Config.get("MYSQL_HOST"),
+        database=Config.get("MYSQL_DATABASE"),
+        user=Config.get("MYSQL_USER"),
+        password=Config.get("MYSQL_PASSWORD"),
+    ) as connection:
         if connection.is_connected():
             db_info = connection.get_server_info()
             print("Connected to MySQL Server version ", db_info)
@@ -56,13 +50,6 @@ async def query_select(string):
             cursor.execute(string)
             result = cursor.fetchall()
             return result
-    except Error as e:
-        print("Error while connecting to MySQL", e)
-    finally:
-        if connection.is_connected():
-            connection.close()
-            cursor.close()
-            print("MySQL connection is closed")
 
 
 async def log(client, value):
@@ -71,22 +58,10 @@ async def log(client, value):
     :param client: Client object
     :param value: Value to be logged
     """
-    log_message = client.get_channel(ids.bot_log_channel)
-    await log_message.send(str(value))
-    format_chars = ["*", "`"]
-    for char in format_chars:
-        value = value.replace(char, "")
-    await log_to_server(value)
-
-
-async def log_to_server(value):
-    """Writes to the server log
-
-    :param value: Value to be logged
-    """
-    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {value}")
-    with open(f"logs/server/{datetime.now().strftime('%Y-%m-%d')}.txt", "a") as file:
-        file.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {value} \n")
+    log_message = client.get_channel(Config.get("BOT_LOG_CHANNEL"))
+    if log_message is not None:
+        await log_message.send(str(value))
+    Logger.get_logger(__name__).info(value)
 
 
 async def check_student_number(student_number):

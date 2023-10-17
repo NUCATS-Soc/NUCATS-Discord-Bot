@@ -3,7 +3,7 @@ import random
 import requests
 from discord.ext import commands
 
-import ids
+from config import Config
 import tools
 
 
@@ -16,7 +16,7 @@ class CodeWars(commands.Cog):
                       description="Type !join username, where username is your codewars account name")
     @commands.guild_only()
     async def join(self, ctx, username):
-        if ctx.channel.id != ids.codewars_log_channel:
+        if ctx.channel.id != Config.get("CODEWARS_LOG_CHANNEL"):
             return
 
         # Checks user has codewars account
@@ -49,10 +49,10 @@ class CodeWars(commands.Cog):
             await ctx.channel.send(f"An account could not be found for ``{username}``")
 
     @commands.command(brief="Draws this weeks winner", description="Draws this weeks winner")
-    @commands.has_role(ids.committee_role)
+    @commands.has_role(Config.get("COMMITTEE_ROLE"))
     @commands.guild_only()
     async def draw(self, ctx):
-        if ctx.channel.id != ids.codewars_log_channel:
+        if ctx.channel.id != Config.get("CODEWARS_LOG_CHANNEL"):
             return
 
         # Gets all registered codewars users
@@ -88,10 +88,10 @@ class CodeWars(commands.Cog):
 
     @commands.command(brief="Sets and announces this weeks challenge",
                       description="Sets this weeks challenge and then posts an announcement")
-    @commands.has_role(ids.committee_role)
+    @commands.has_role(Config.get("COMMITTEE_ROLE"))
     @commands.guild_only()
     async def challenge(self, ctx, challenge_id):
-        if ctx.channel.id != ids.bot_log_channel:
+        if ctx.channel.id != Config.get("BOT_LOG_CHANNEL"):
             return
 
         # Checks if the challenge has been used before
@@ -106,7 +106,7 @@ class CodeWars(commands.Cog):
 
         await tools.log(self.client, "Posting challenge...")
 
-        challenge_announcement = self.client.get_channel(ids.codewars_announcements_channel)
+        challenge_announcement = self.client.get_channel(Config.get("CODEWARS_ANNOUNCEMENTS_CHANNEL"))
         await challenge_announcement.send(f"🔥  This weeks code wars challenge is now live @here! 🔥 \n" +
                                           f"✨ Play each week for the chance to win a £5 voucher and improve your coding ability! \n" +
                                           f"🛠️ This weeks challenge is https://www.codewars.com/kata/{challenge_id} \n" +
@@ -119,7 +119,7 @@ class CodeWars(commands.Cog):
                       description="Lists how many people have completed this weeks challenge")
     @commands.guild_only()
     async def list_stat(self, ctx):
-        if ctx.channel.id not in ids.codewars_group:
+        if ctx.channel.id not in Config.get("CODEWARS_GROUP"):
             return
 
         # Gets the latest challenge
