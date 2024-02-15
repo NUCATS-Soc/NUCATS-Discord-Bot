@@ -1,15 +1,23 @@
 import asyncio
 import re
+from datetime import datetime
+from typing import TYPE_CHECKING
+
 import discord
 import mysql.connector
 from mysql.connector import Error
-from datetime import datetime
 
-import database
 import ids
+import database
+
+if TYPE_CHECKING:
+    from typing import Any
+    from discord import Message, Reaction, Member, User
+    from discord.client import Bot
+    from discord.ext.commands import Context
 
 
-async def query_insert(string):
+async def query_insert(string: "str") -> "bool":
     """ Queries the database with a given SQL INSERT command
 
     :param string: SQL INSERT command
@@ -38,7 +46,7 @@ async def query_insert(string):
             print("MySQL connection is closed")
 
 
-async def query_select(string):
+async def query_select(string: "str") -> "list":
     """ Queries the database with a given SELECT SQL command
 
     :param string: SQL SELECT query
@@ -65,7 +73,7 @@ async def query_select(string):
             print("MySQL connection is closed")
 
 
-async def log(client, value):
+async def log(client: "Bot", value: "Any"):
     """Writes to the log channel and the server log
 
     :param client: Client object
@@ -79,17 +87,17 @@ async def log(client, value):
     await log_to_server(value)
 
 
-async def log_to_server(value):
+async def log_to_server(value: "Any"):
     """Writes to the server log
 
     :param value: Value to be logged
     """
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {value}")
-    with open(f"logs/server/{datetime.now().strftime('%Y-%m-%d')}.txt", "a") as file:
+    with open(f"logs/server/{datetime.now().strftime('%Y-%m-%d')}.txt", "a", encoding="utf-8") as file:
         file.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {value} \n")
 
 
-async def check_student_number(student_number):
+async def check_student_number(student_number: "str") -> "bool":
     """Checks if a given student number is valid
 
     :param student_number: String to be checked
@@ -98,13 +106,10 @@ async def check_student_number(student_number):
     if len(student_number) != 8:
         return False
     regex = r'^([A-C|a-c])\d{7}$'
-    if re.match(regex, student_number):
-        return True
-    else:
-        return False
+    return re.match(regex, student_number)
 
 
-async def user_input_dm(client, ctx, reg_str, timeout=None):
+async def user_input_dm(client: "Bot", ctx: "Context", reg_str: "str", timeout: "float | None" = None) -> "Message | None":
     """Gets input from the user and performs validation checks
 
     :param client: Client object
@@ -114,20 +119,18 @@ async def user_input_dm(client, ctx, reg_str, timeout=None):
     :return: Validated message or None if validation failed
     """
 
-    def check(message):
+    def check(message: "Message"):
         return ctx.author == message.author and isinstance(message.channel, discord.channel.DMChannel) and \
                (message.content.lower() == reg_str.lower() or re.match(reg_str, message.content.lower()))
 
     try:
-        msg = await client.wait_for("message", timeout=timeout, check=check)
+        return await client.wait_for("message", timeout=timeout, check=check)
     except asyncio.TimeoutError:
         await ctx.author.send("You did not respond in time. Please try again. ")
         return None
-    else:
-        return msg
 
 
-async def get_user_pronouns(client, ctx, timeout=60.0):
+async def get_user_pronouns(client: "Bot", ctx: "Context", timeout: "float" = 60.0)-> "tuple[Reaction, Member | User] | tuple[None, None]":
     """Gets the users preferred pronouns
 
     :param client: Client object
@@ -148,14 +151,13 @@ async def get_user_pronouns(client, ctx, timeout=60.0):
     for emoji in emojis:
         await gender_message.add_reaction(emoji)
 
-    def check(reaction, user):
+    def check(reaction: "Reaction", user: "Member | User"):
         return user == ctx.author and str(reaction.emoji) in emojis
 
     try:
         # Waits for reaction to post by user
         reaction, user = await client.wait_for("reaction_add", timeout=timeout, check=check)
+        return reaction, user
     except asyncio.TimeoutError:
         await ctx.author.send("You did not react to the post in time. Type ``!pronouns`` to try again.")
         return None, None
-    else:
-        return reaction, user

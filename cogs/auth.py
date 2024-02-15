@@ -1,26 +1,33 @@
-import discord
-from discord.ext import commands
-from csv import writer
-
-import ids
-import tools
 import random
 import string
 import smtplib
+from csv import writer
+from typing import TYPE_CHECKING
+
+import discord
+from discord.ext import commands
+
+import ids
+import tools
+
+if TYPE_CHECKING:
+    from discord import Message
+    from discord.client import Bot
+    from discord.ext.commands import Context
 
 # Gets password for authing with the Google account
-with open("auth_password.txt") as file:
-    auth_pw = file.read()
+with open("auth_password.txt", encoding="utf-8") as password_file:
+    auth_pw = password_file.read()
 
 
 class Authentication(commands.Cog):
-    def __init__(self, client):
+    def __init__(self, client: "Bot"):
         self.client = client
 
     @commands.command(brief="Starts the auth process",
                       description="Starts the auth process. Can only be executed in the auth channel")
     @commands.guild_only()
-    async def auth(self, ctx):
+    async def auth(self, ctx: "Context"):
         if ctx.channel.id != ids.auth_channel:
             return
 
@@ -56,9 +63,9 @@ class Authentication(commands.Cog):
         body = ("Hello " + str(
             ctx.author) + ". Please copy and paste the following code into the discord private chat\n\n" + auth_code)
         subject = "Verification Code"
-        email_text = """From: %s\r\nTo: %s\r\nSubject: %s\r\n\
-                    %s
-                    """ % (sent_from, ", ".join(to), subject, body)
+        email_text = f"""From: {sent_from}\r\nTo: {", ".join(to)}\r\nSubject: {subject}\r\n\
+                    {body}
+                    """
 
         try:
             server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
@@ -82,7 +89,7 @@ class Authentication(commands.Cog):
 
         await ctx.author.send("**Step 4/6** \nPlease read our rules and type ``agree`` to accept them.")
 
-        with open("rules.txt") as f:
+        with open("rules.txt", encoding="utf-8") as f:
             lines = f.read()
 
         await ctx.author.send(lines)
@@ -196,11 +203,11 @@ class Authentication(commands.Cog):
                         f"  - Id ``{member.id}``"
                         )
 
-        with open("logs/verified_users.csv", "a", newline="") as file:
+        with open("logs/verified_users.csv", "a", newline="", encoding="utf-8") as file:
             file_writer = writer(file)
             file_writer.writerow([member.id, student_number.content])
             file.close()
 
 
-async def setup(client):
+async def setup(client: "Bot"):
     await client.add_cog(Authentication(client))
